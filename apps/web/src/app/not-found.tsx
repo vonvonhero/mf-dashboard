@@ -8,7 +8,7 @@ export default function NotFound() {
       <Card className="max-w-lg w-full">
         <CardContent className="text-center py-12 space-y-5">
           <Image
-            src="/cry.png"
+            src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/cry.png`}
             alt="ページが見つかりません"
             width={120}
             height={120}

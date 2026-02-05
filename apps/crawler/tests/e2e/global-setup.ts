@@ -1,8 +1,7 @@
-import { existsSync, mkdirSync, unlinkSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";
 import { loginWithAuthState } from "../../src/auth/login.js";
-import { getAuthStatePath } from "../../src/auth/state.js";
 import { createBrowserContext } from "../../src/browser/context.js";
 
 export const SCREENSHOT_DIR = path.resolve(process.cwd(), "tests/e2e/screenshots");
@@ -15,13 +14,6 @@ export function ensureScreenshotDir(): void {
   }
 }
 
-function cleanupAuthState(): void {
-  const authStatePath = getAuthStatePath();
-  if (existsSync(authStatePath)) {
-    unlinkSync(authStatePath);
-  }
-}
-
 export async function setup() {
   try {
     process.loadEnvFile(ROOT_ENV_PATH);
@@ -30,7 +22,6 @@ export async function setup() {
   }
 
   console.log("Setting up E2E tests...");
-  cleanupAuthState();
   const browser = await chromium.launch({ headless: true });
   const context = await createBrowserContext(browser, { useAuthState: true });
   const page = await context.newPage();
@@ -41,8 +32,4 @@ export async function setup() {
   } finally {
     await browser.close();
   }
-
-  return () => {
-    cleanupAuthState();
-  };
 }

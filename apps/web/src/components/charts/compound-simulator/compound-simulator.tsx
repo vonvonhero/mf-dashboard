@@ -339,6 +339,20 @@ const PRODUCT_PRESETS = [
     expenseRatio: 0.2,
     volatility: 22,
   },
+  {
+    value: "nikkei225",
+    label: "日経平均",
+    annualReturnRate: 8,
+    expenseRatio: 0.143,
+    volatility: 20,
+  },
+  {
+    value: "topix",
+    label: "TOPIX",
+    annualReturnRate: 7,
+    expenseRatio: 0.143,
+    volatility: 18,
+  },
 ] as const;
 
 export function CompoundSimulator({

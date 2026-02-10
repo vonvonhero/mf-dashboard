@@ -128,3 +128,18 @@ export const WithSecurityFeatures: Story = {
     defaultCurrentAge: 30,
   },
 };
+
+export const WithCustomDefaults: Story = {
+  args: {
+    defaultInitialAmount: 2_000_000,
+    defaultMonthlyContribution: 80_000,
+    defaultAnnualReturnRate: 7.5,
+    defaultInflationRate: 3,
+    defaultContributionYears: 20,
+    defaultWithdrawalStartYear: 25,
+    defaultWithdrawalYears: 35,
+    defaultExpenseRatio: 0.05,
+    defaultVolatility: 18,
+    defaultCurrentAge: 35,
+  },
+};

@@ -42,6 +42,12 @@ import { SensitivityTable } from "./sensitivity-table";
 import { useCompoundCalculator } from "./use-compound-calculator";
 import { useMonteCarloSimulator } from "./use-monte-carlo-simulator";
 
+function envNum(value: string | undefined): number | undefined {
+  if (value == null || value === "") return undefined;
+  const n = Number(value);
+  return Number.isNaN(n) ? undefined : n;
+}
+
 interface PortfolioContext {
   initialAmountSource?: string;
   monthlyContributionSource?: string;
@@ -62,6 +68,10 @@ interface CompoundSimulatorProps {
   defaultMonthlyWithdrawal?: number;
   defaultWithdrawalYears?: number;
   defaultCurrentAge?: number;
+  defaultContributionYears?: number;
+  defaultWithdrawalStartYear?: number;
+  defaultExpenseRatio?: number;
+  defaultVolatility?: number;
   title?: string;
   portfolioContext?: PortfolioContext;
 }
@@ -368,27 +378,34 @@ const PRODUCT_PRESETS = [
 ] as const;
 
 export function CompoundSimulator({
-  defaultInitialAmount = 0,
-  defaultMonthlyContribution = 0,
-  defaultAnnualReturnRate = 5,
-  defaultInflationRate = 2,
-  defaultWithdrawalMode = "amount",
-  defaultWithdrawalRate = 4,
-  defaultMonthlyWithdrawal = 250000,
-  defaultWithdrawalYears = 30,
-  defaultCurrentAge,
+  defaultInitialAmount = envNum(process.env.NEXT_PUBLIC_SIMULATOR_INITIAL_AMOUNT) ?? 0,
+  defaultMonthlyContribution = envNum(process.env.NEXT_PUBLIC_SIMULATOR_MONTHLY_CONTRIBUTION) ?? 0,
+  defaultAnnualReturnRate = envNum(process.env.NEXT_PUBLIC_SIMULATOR_ANNUAL_RETURN_RATE) ?? 5,
+  defaultInflationRate = envNum(process.env.NEXT_PUBLIC_SIMULATOR_INFLATION_RATE) ?? 2,
+  defaultWithdrawalMode = (process.env.NEXT_PUBLIC_SIMULATOR_WITHDRAWAL_MODE === "rate"
+    ? "rate"
+    : "amount") as WithdrawalMode,
+  defaultWithdrawalRate = envNum(process.env.NEXT_PUBLIC_SIMULATOR_WITHDRAWAL_RATE) ?? 4,
+  defaultMonthlyWithdrawal = envNum(process.env.NEXT_PUBLIC_SIMULATOR_MONTHLY_WITHDRAWAL) ?? 250000,
+  defaultWithdrawalYears = envNum(process.env.NEXT_PUBLIC_SIMULATOR_WITHDRAWAL_YEARS) ?? 30,
+  defaultCurrentAge = envNum(process.env.NEXT_PUBLIC_SIMULATOR_CURRENT_AGE),
+  defaultContributionYears = envNum(process.env.NEXT_PUBLIC_SIMULATOR_CONTRIBUTION_YEARS) ?? 30,
+  defaultWithdrawalStartYear = envNum(process.env.NEXT_PUBLIC_SIMULATOR_WITHDRAWAL_START_YEAR) ??
+    30,
+  defaultExpenseRatio = envNum(process.env.NEXT_PUBLIC_SIMULATOR_EXPENSE_RATIO) ?? 0.1,
+  defaultVolatility = envNum(process.env.NEXT_PUBLIC_SIMULATOR_VOLATILITY) ?? 15,
   title = "複利シミュレーター",
   portfolioContext,
 }: CompoundSimulatorProps) {
   const [initialAmount, setInitialAmount] = useState(defaultInitialAmount);
   const [monthlyContribution, setMonthlyContribution] = useState(defaultMonthlyContribution);
   const [annualReturnRate, setAnnualReturnRate] = useState(defaultAnnualReturnRate);
-  const [expenseRatio, setExpenseRatio] = useState(0.1);
+  const [expenseRatio, setExpenseRatio] = useState(defaultExpenseRatio);
   const [inflationRate, setInflationRate] = useState(defaultInflationRate);
-  const [contributionYears, setContributionYears] = useState(30);
-  const [withdrawalStartYear, setWithdrawalStartYear] = useState(30);
+  const [contributionYears, setContributionYears] = useState(defaultContributionYears);
+  const [withdrawalStartYear, setWithdrawalStartYear] = useState(defaultWithdrawalStartYear);
   const [withdrawalYears, setWithdrawalYears] = useState(defaultWithdrawalYears);
-  const [volatility, setVolatility] = useState(15);
+  const [volatility, setVolatility] = useState(defaultVolatility);
   const [taxFree, setTaxFree] = useState(false);
   const [withdrawalMode, setWithdrawalMode] = useState<WithdrawalMode>(defaultWithdrawalMode);
   const [withdrawalRate, setWithdrawalRate] = useState(defaultWithdrawalRate);

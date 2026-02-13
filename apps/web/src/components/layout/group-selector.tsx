@@ -1,4 +1,4 @@
-import { getAllGroups, getCurrentGroup } from "@moneyforward-daily-action/db";
+import { getAllGroups, getCurrentGroup } from "@mf-dashboard/db";
 import { GroupSelectorDisplay, groupSelectorContainerClassName } from "./group-selector-display";
 import { GroupSelectorClient } from "./group-selector.client";
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getHoldingsWithLatestValues } from "@moneyforward-daily-action/db";
+import { getHoldingsWithLatestValues } from "@mf-dashboard/db";
 import { CompoundSimulator } from "../../components/charts/compound-simulator/compound-simulator";
 import { PageLayout } from "../../components/layout/page-layout";
 

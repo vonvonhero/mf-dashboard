@@ -1,5 +1,5 @@
 import type { Page } from "playwright";
-import { mfUrls } from "@moneyforward-daily-action/meta/urls";
+import { mfUrls } from "@mf-dashboard/meta/urls";
 import { debug } from "../logger.js";
 
 /**

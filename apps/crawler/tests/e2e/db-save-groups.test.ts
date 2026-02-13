@@ -1,9 +1,6 @@
 import type { Browser, BrowserContext } from "playwright";
-import { getDb, schema } from "@moneyforward-daily-action/db";
-import {
-  saveScrapedData,
-  saveGroupOnlyData,
-} from "@moneyforward-daily-action/db/repository/save-scraped-data";
+import { getDb, schema } from "@mf-dashboard/db";
+import { saveScrapedData, saveGroupOnlyData } from "@mf-dashboard/db/repository/save-scraped-data";
 import { eq } from "drizzle-orm";
 import path from "node:path";
 import { describe, test, expect, beforeAll, afterAll } from "vitest";

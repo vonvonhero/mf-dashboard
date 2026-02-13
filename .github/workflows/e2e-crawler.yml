@@ -33,7 +33,7 @@ jobs:
           mode: restore
           enabled: ${{ vars.CACHE_AUTH_STATE }}
       - name: Run e2e tests
-        run: pnpm --filter @moneyforward-daily-action/crawler test:e2e
+        run: pnpm --filter @mf-dashboard/crawler test:e2e
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           OP_VAULT: ${{ secrets.OP_VAULT }}

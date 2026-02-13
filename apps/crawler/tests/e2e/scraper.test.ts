@@ -1,4 +1,4 @@
-import type { ScrapedData } from "@moneyforward-daily-action/db/types";
+import type { ScrapedData } from "@mf-dashboard/db/types";
 import type { Browser, BrowserContext } from "playwright";
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import { scrape } from "../../src/scraper.js";

@@ -1,4 +1,4 @@
-import type { AssetSummary, AssetItem, CashFlowSummary } from "@moneyforward-daily-action/db/types";
+import type { AssetSummary, AssetItem, CashFlowSummary } from "@mf-dashboard/db/types";
 
 export interface AccountIssue {
   name: string;

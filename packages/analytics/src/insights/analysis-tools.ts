@@ -1,4 +1,4 @@
-import type { Db } from "@moneyforward-daily-action/db";
+import type { Db } from "@mf-dashboard/db";
 import {
   getMonthlySummaries,
   getMonthlyCategoryTotals,
@@ -6,7 +6,7 @@ import {
   getHoldingsWithDailyChange,
   getFinancialMetrics,
   getAvailableMonths,
-} from "@moneyforward-daily-action/db";
+} from "@mf-dashboard/db";
 import { tool } from "ai";
 import { z } from "zod";
 import { analyzeIncomeStability } from "./analyze-income-stability.js";

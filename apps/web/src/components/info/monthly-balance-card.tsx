@@ -1,5 +1,5 @@
-import { getLatestMonthlySummary } from "@moneyforward-daily-action/db";
-import { getTransactionsByMonth } from "@moneyforward-daily-action/db";
+import { getLatestMonthlySummary } from "@mf-dashboard/db";
+import { getTransactionsByMonth } from "@mf-dashboard/db";
 import { Calendar } from "lucide-react";
 import { formatDateShort } from "../../lib/format";
 import { AmountDisplay } from "../ui/amount-display";

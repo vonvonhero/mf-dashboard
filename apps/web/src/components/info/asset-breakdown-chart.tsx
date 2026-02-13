@@ -3,7 +3,7 @@ import {
   getCategoryChangesForPeriod,
   getLatestTotalAssets,
   getLiabilityBreakdownByCategory,
-} from "@moneyforward-daily-action/db";
+} from "@mf-dashboard/db";
 import { PieChart } from "lucide-react";
 import { EmptyState } from "../ui/empty-state";
 import { AssetBreakdownChartClient } from "./asset-breakdown-chart.client";

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { getMonthlySummaries } from "@moneyforward-daily-action/db";
-import { mfUrls } from "@moneyforward-daily-action/meta/urls";
+import { getMonthlySummaries } from "@mf-dashboard/db";
+import { mfUrls } from "@mf-dashboard/meta/urls";
 import { Suspense } from "react";
 import { MonthlyIncomeExpenseChart } from "../../components/info/monthly-income-expense-chart";
 import { MonthlySummaryCard } from "../../components/info/monthly-summary-card";

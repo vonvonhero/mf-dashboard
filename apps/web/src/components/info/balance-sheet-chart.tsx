@@ -2,7 +2,7 @@ import {
   getAssetBreakdownByCategory,
   getLiabilityBreakdownByCategory,
   getLatestTotalAssets,
-} from "@moneyforward-daily-action/db";
+} from "@mf-dashboard/db";
 import { Scale } from "lucide-react";
 import { EmptyState } from "../ui/empty-state";
 import { BalanceSheetChartClient } from "./balance-sheet-chart.client";

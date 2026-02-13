@@ -1,5 +1,5 @@
 {
-  "name": "@moneyforward-daily-action/db-e2e",
+  "name": "@mf-dashboard/db-e2e",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -8,8 +8,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@moneyforward-daily-action/crawler": "workspace:*",
-    "@moneyforward-daily-action/db": "workspace:*",
+    "@mf-dashboard/crawler": "workspace:*",
+    "@mf-dashboard/db": "workspace:*",
     "playwright": "catalog:"
   },
   "devDependencies": {

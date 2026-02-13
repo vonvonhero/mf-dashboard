@@ -1,4 +1,4 @@
-import { getHoldingsWithDailyChange } from "@moneyforward-daily-action/db";
+import { getHoldingsWithDailyChange } from "@mf-dashboard/db";
 import { ArrowUpDown } from "lucide-react";
 import { EmptyState } from "../ui/empty-state";
 import { DailyChangeCardClient } from "./daily-change-card.client";

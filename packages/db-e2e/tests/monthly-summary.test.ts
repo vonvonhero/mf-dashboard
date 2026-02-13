@@ -1,14 +1,14 @@
-import { loginWithAuthState } from "@moneyforward-daily-action/crawler/auth/login";
-import { hasAuthState } from "@moneyforward-daily-action/crawler/auth/state";
-import { createBrowserContext } from "@moneyforward-daily-action/crawler/browser/context";
-import { switchGroup, createGroupScope } from "@moneyforward-daily-action/crawler/scrapers/group";
-import { scrapeMonthlySummary } from "@moneyforward-daily-action/crawler/scrapers/monthly-summary";
+import { loginWithAuthState } from "@mf-dashboard/crawler/auth/login";
+import { hasAuthState } from "@mf-dashboard/crawler/auth/state";
+import { createBrowserContext } from "@mf-dashboard/crawler/browser/context";
+import { switchGroup, createGroupScope } from "@mf-dashboard/crawler/scrapers/group";
+import { scrapeMonthlySummary } from "@mf-dashboard/crawler/scrapers/monthly-summary";
 import {
   getDb,
   getMonthlySummaryByMonth,
   getAllGroups as getDbGroups,
   closeDb,
-} from "@moneyforward-daily-action/db";
+} from "@mf-dashboard/db";
 import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
 /**
  * Monthly Summary E2E Test

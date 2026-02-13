@@ -12,7 +12,7 @@ description: Use when adding/modifying database tables or columns in Drizzle ORM
 - [ ] Specify `onDelete` for all foreign keys (cascade/set null)
 - [ ] Add index for frequently queried columns
 - [ ] Update `packages/db/src/schema/relations.ts` if adding relations
-- [ ] Run migration: `pnpm --filter @moneyforward-daily-action/db exec drizzle-kit generate`
+- [ ] Run migration: `pnpm --filter @mf-dashboard/db exec drizzle-kit generate`
 - [ ] Update `architecture/database-schema.md` with new ERD
 
 ## File Locations

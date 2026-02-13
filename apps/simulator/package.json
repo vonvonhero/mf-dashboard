@@ -1,5 +1,5 @@
 {
-  "name": "@moneyforward-daily-action/simulator-app",
+  "name": "@mf-dashboard/simulator-app",
   "version": "0.0.0",
   "private": true,
   "type": "module",

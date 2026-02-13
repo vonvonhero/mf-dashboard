@@ -4,8 +4,8 @@ import {
   getCategoryChangesForPeriod,
   getLatestTotalAssets,
   getLiabilityBreakdownByCategory,
-} from "@moneyforward-daily-action/db";
-import { getLatestMonthlySummary } from "@moneyforward-daily-action/db";
+} from "@mf-dashboard/db";
+import { getLatestMonthlySummary } from "@mf-dashboard/db";
 import { mocked } from "storybook/test";
 import { AssetBreakdownChart } from "./asset-breakdown-chart";
 

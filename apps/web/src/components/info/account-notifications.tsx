@@ -1,4 +1,4 @@
-import { getAccountsWithAssets } from "@moneyforward-daily-action/db";
+import { getAccountsWithAssets } from "@mf-dashboard/db";
 import { AccountNotificationsClient } from "./account-notifications.client";
 
 export function AccountNotifications() {

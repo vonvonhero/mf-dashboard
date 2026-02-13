@@ -1,5 +1,5 @@
 {
-  "name": "@moneyforward-daily-action/analytics",
+  "name": "@mf-dashboard/analytics",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -16,7 +16,7 @@
     "@ai-sdk/anthropic": "3.0.43",
     "@ai-sdk/google": "3.0.29",
     "@ai-sdk/openai": "3.0.28",
-    "@moneyforward-daily-action/db": "workspace:*",
+    "@mf-dashboard/db": "workspace:*",
     "ai": "6.0.84",
     "zod": "4.3.6"
   },

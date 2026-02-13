@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { hasInvestmentHoldings } from "@moneyforward-daily-action/db";
+import { hasInvestmentHoldings } from "@mf-dashboard/db";
 import { AssetBreakdownChart } from "../components/info/asset-breakdown-chart";
 import { AssetHistoryChart } from "../components/info/asset-history-chart";
 import { DailyChangeCard } from "../components/info/daily-change-card";

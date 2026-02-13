@@ -1,5 +1,5 @@
 {
-  "name": "@moneyforward-daily-action/meta",
+  "name": "@mf-dashboard/meta",
   "version": "0.0.0",
   "private": true,
   "type": "module",

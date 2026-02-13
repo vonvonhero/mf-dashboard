@@ -1,4 +1,4 @@
-import { getTransactions } from "@moneyforward-daily-action/db";
+import { getTransactions } from "@mf-dashboard/db";
 import { PieChart as PieChartIcon } from "lucide-react";
 import { consolidateCategories } from "../../lib/aggregation";
 import { PieChart } from "../charts/pie-chart";

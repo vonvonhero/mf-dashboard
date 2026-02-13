@@ -1,6 +1,6 @@
-import { getAccountByMfId } from "@moneyforward-daily-action/db";
-import { getLatestTotalAssets } from "@moneyforward-daily-action/db";
-import { getHoldingsByAccountId, getHoldingsWithLatestValues } from "@moneyforward-daily-action/db";
+import { getAccountByMfId } from "@mf-dashboard/db";
+import { getLatestTotalAssets } from "@mf-dashboard/db";
+import { getHoldingsByAccountId, getHoldingsWithLatestValues } from "@mf-dashboard/db";
 import { LucideIcon, PiggyBankIcon, LandmarkIcon } from "lucide-react";
 import { AmountDisplay } from "../ui/amount-display";
 import { Card, CardHeader, CardTitle } from "../ui/card";

@@ -1,5 +1,5 @@
-import type { Db } from "@moneyforward-daily-action/db";
-import { saveAnalyticsReport } from "@moneyforward-daily-action/db/repository/analytics";
+import type { Db } from "@mf-dashboard/db";
+import { saveAnalyticsReport } from "@mf-dashboard/db/repository/analytics";
 import { isLLMEnabled } from "./config.js";
 import { generateInsights } from "./insights/generator.js";
 

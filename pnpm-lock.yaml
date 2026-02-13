@@ -62,13 +62,13 @@ importers:
       '@1password/sdk':
         specifier: 0.4.0
         version: 0.4.0
-      '@moneyforward-daily-action/analytics':
+      '@mf-dashboard/analytics':
         specifier: workspace:*
         version: link:../../packages/analytics
-      '@moneyforward-daily-action/db':
+      '@mf-dashboard/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@moneyforward-daily-action/meta':
+      '@mf-dashboard/meta':
         specifier: workspace:*
         version: link:../../packages/meta
       '@slack/web-api':
@@ -99,15 +99,15 @@ importers:
 
   apps/mcp:
     dependencies:
+      '@mf-dashboard/analytics':
+        specifier: workspace:*
+        version: link:../../packages/analytics
+      '@mf-dashboard/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@modelcontextprotocol/sdk':
         specifier: 1.26.0
         version: 1.26.0(zod@4.3.6)
-      '@moneyforward-daily-action/analytics':
-        specifier: workspace:*
-        version: link:../../packages/analytics
-      '@moneyforward-daily-action/db':
-        specifier: workspace:*
-        version: link:../../packages/db
       better-sqlite3:
         specifier: 'catalog:'
         version: 12.6.2
@@ -173,10 +173,10 @@ importers:
       '@base-ui/react':
         specifier: 1.2.0
         version: 1.2.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@moneyforward-daily-action/db':
+      '@mf-dashboard/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@moneyforward-daily-action/meta':
+      '@mf-dashboard/meta':
         specifier: workspace:*
         version: link:../../packages/meta
       '@nivo/sankey':
@@ -279,7 +279,7 @@ importers:
       '@ai-sdk/openai':
         specifier: 3.0.28
         version: 3.0.28(zod@4.3.6)
-      '@moneyforward-daily-action/db':
+      '@mf-dashboard/db':
         specifier: workspace:*
         version: link:../db
       ai:
@@ -326,10 +326,10 @@ importers:
 
   packages/db-e2e:
     dependencies:
-      '@moneyforward-daily-action/crawler':
+      '@mf-dashboard/crawler':
         specifier: workspace:*
         version: link:../../apps/crawler
-      '@moneyforward-daily-action/db':
+      '@mf-dashboard/db':
         specifier: workspace:*
         version: link:../db
       playwright:

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { getHoldingsWithDailyChange } from "@moneyforward-daily-action/db";
+import { getHoldingsWithDailyChange } from "@mf-dashboard/db";
 import { mocked } from "storybook/test";
 import { DailyChangeCard } from "./daily-change-card";
 

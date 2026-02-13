@@ -20,10 +20,7 @@ const config: StorybookConfig = {
       resolve: {
         ...config.resolve,
         alias: Object.assign({}, baseAlias, {
-          "@moneyforward-daily-action/db": join(
-            __dirname,
-            "../__mocks__/@moneyforward-daily-action/db.ts",
-          ),
+          "@mf-dashboard/db": join(__dirname, "../__mocks__/@mf-dashboard/db.ts"),
         }),
       },
     };

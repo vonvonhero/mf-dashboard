@@ -3,10 +3,10 @@
  *
  * 使い方:
  *   DB_PATH=../../data/demo.db AI_PROVIDER=openai AI_MODEL=gpt-4o-mini AI_API_KEY=sk-xxx \
- *     pnpm --filter @moneyforward-daily-action/analytics generate:demo-insights
+ *     pnpm --filter @mf-dashboard/analytics generate:demo-insights
  */
 
-import { getDb } from "@moneyforward-daily-action/db";
+import { getDb } from "@mf-dashboard/db";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { generateInsights } from "../src/insights/generator.js";

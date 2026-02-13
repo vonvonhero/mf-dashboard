@@ -48,7 +48,7 @@ jobs:
           NEXT_PUBLIC_GITHUB_ORG: ${{ github.repository_owner }}
           NEXT_PUBLIC_GITHUB_REPO: ${{ github.event.repository.name }}
       - name: Build Storybook
-        run: pnpm --filter @moneyforward-daily-action/web build-storybook --output-dir out/storybook
+        run: pnpm --filter @mf-dashboard/web build-storybook --output-dir out/storybook
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

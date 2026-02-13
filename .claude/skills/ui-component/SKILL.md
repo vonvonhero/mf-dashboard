@@ -10,7 +10,7 @@ description: Use when creating new UI components under apps/web/src/components/
 - [ ] Create component file
 - [ ] Create `*.stories.tsx` for Storybook
 - [ ] Use semantic colors for monetary values (see CLAUDE.md)
-- [ ] Verify Storybook: `pnpm --filter @moneyforward-daily-action/web storybook`
+- [ ] Verify Storybook: `pnpm --filter @mf-dashboard/web storybook`
 
 ## Component Types
 

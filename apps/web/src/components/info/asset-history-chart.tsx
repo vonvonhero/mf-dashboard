@@ -1,4 +1,4 @@
-import { getAssetHistoryWithCategories } from "@moneyforward-daily-action/db";
+import { getAssetHistoryWithCategories } from "@mf-dashboard/db";
 import { LineChart } from "lucide-react";
 import { EmptyState } from "../ui/empty-state";
 import { AssetHistoryChartClient } from "./asset-history-chart.client";

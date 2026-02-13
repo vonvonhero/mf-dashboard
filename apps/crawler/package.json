@@ -1,5 +1,5 @@
 {
-  "name": "@moneyforward-daily-action/crawler",
+  "name": "@mf-dashboard/crawler",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -22,9 +22,9 @@
   },
   "dependencies": {
     "@1password/sdk": "0.4.0",
-    "@moneyforward-daily-action/analytics": "workspace:*",
-    "@moneyforward-daily-action/db": "workspace:*",
-    "@moneyforward-daily-action/meta": "workspace:*",
+    "@mf-dashboard/analytics": "workspace:*",
+    "@mf-dashboard/db": "workspace:*",
+    "@mf-dashboard/meta": "workspace:*",
     "@slack/web-api": "7.14.0",
     "better-sqlite3": "catalog:",
     "drizzle-orm": "catalog:"

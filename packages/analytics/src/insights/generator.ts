@@ -1,4 +1,4 @@
-import type { Db } from "@moneyforward-daily-action/db";
+import type { Db } from "@mf-dashboard/db";
 import { generateText, Output, stepCountIs } from "ai";
 import { z } from "zod";
 import type { AnalyticsInsights } from "../types.js";

@@ -1,4 +1,4 @@
-// Storybook mock for @moneyforward-daily-action/db
+// Storybook mock for @mf-dashboard/db
 // Prevents better-sqlite3 (native addon) from being loaded in the browser
 import { fn } from "storybook/test";
 

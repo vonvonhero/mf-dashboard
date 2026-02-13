@@ -1,5 +1,5 @@
 {
-  "name": "@moneyforward-daily-action/web",
+  "name": "@mf-dashboard/web",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -20,8 +20,8 @@
   },
   "dependencies": {
     "@base-ui/react": "1.2.0",
-    "@moneyforward-daily-action/db": "workspace:*",
-    "@moneyforward-daily-action/meta": "workspace:*",
+    "@mf-dashboard/db": "workspace:*",
+    "@mf-dashboard/meta": "workspace:*",
     "@nivo/sankey": "0.99.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",

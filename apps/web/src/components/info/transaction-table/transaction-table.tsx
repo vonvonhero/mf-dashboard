@@ -1,9 +1,9 @@
-import { getAccountByMfId } from "@moneyforward-daily-action/db";
+import { getAccountByMfId } from "@mf-dashboard/db";
 import {
   getTransactions,
   getTransactionsByAccountId,
   getTransactionsByMonth,
-} from "@moneyforward-daily-action/db";
+} from "@mf-dashboard/db";
 import { ListOrdered } from "lucide-react";
 import { EmptyState } from "../../ui/empty-state";
 import { TransactionTableClient } from "./transaction-table.client";

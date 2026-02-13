@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { getAccountByMfId } from "@moneyforward-daily-action/db";
-import { getHoldingsByAccountId, getHoldingsWithLatestValues } from "@moneyforward-daily-action/db";
-import { getLatestMonthlySummary } from "@moneyforward-daily-action/db";
+import { getAccountByMfId } from "@mf-dashboard/db";
+import { getHoldingsByAccountId, getHoldingsWithLatestValues } from "@mf-dashboard/db";
+import { getLatestMonthlySummary } from "@mf-dashboard/db";
 import { expect, mocked, userEvent, within } from "storybook/test";
 import { HoldingsTable } from "./holdings-table";
 

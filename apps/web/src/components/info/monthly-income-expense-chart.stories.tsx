@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { getMonthlySummaries } from "@moneyforward-daily-action/db";
+import { getMonthlySummaries } from "@mf-dashboard/db";
 import { mocked } from "storybook/test";
 import { MonthlyIncomeExpenseChart } from "./monthly-income-expense-chart";
 

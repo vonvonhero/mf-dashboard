@@ -1,5 +1,5 @@
-import { getMonthlyCategoryTotals } from "@moneyforward-daily-action/db";
-import { getTransactionsByMonth } from "@moneyforward-daily-action/db";
+import { getMonthlyCategoryTotals } from "@mf-dashboard/db";
+import { getTransactionsByMonth } from "@mf-dashboard/db";
 import { List } from "lucide-react";
 import { parseMonthString } from "../../../lib/calendar";
 import { EmptyState } from "../../ui/empty-state";

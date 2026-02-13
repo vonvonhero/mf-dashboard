@@ -1,4 +1,4 @@
-import { getMonthlySummaries } from "@moneyforward-daily-action/db";
+import { getMonthlySummaries } from "@mf-dashboard/db";
 import { TrendingUp } from "lucide-react";
 import { EmptyState } from "../ui/empty-state";
 import { MonthlyIncomeExpenseChartClient } from "./monthly-income-expense-chart.client";

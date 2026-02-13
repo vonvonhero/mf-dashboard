@@ -1,4 +1,4 @@
-# @moneyforward-daily-action/mcp
+# @mf-dashboard/mcp
 
 MCP (Model Context Protocol) サーバー。ローカルの SQLite データベースに対して、Claude Desktop や Claude Code などの MCP クライアントから家計データを照会できる。
 
@@ -6,7 +6,7 @@ MCP (Model Context Protocol) サーバー。ローカルの SQLite データベ�
 
 ```bash
 # ビルド
-pnpm --filter @moneyforward-daily-action/mcp build
+pnpm --filter @mf-dashboard/mcp build
 ```
 
 `dist/index.cjs` が生成される。

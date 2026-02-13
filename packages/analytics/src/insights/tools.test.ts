@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { createFinancialTools } from "./tools";
 
-vi.mock("@moneyforward-daily-action/db", () => ({
+vi.mock("@mf-dashboard/db", () => ({
   getAccountsWithAssets: vi.fn(() => [{ id: 1, name: "Account A" }]),
   getAccountsGroupedByCategory: vi.fn(() => []),
   getTransactionsByMonth: vi.fn(() => []),
@@ -44,7 +44,7 @@ const {
   getYearToDateSummary,
   getCategoryChangesForPeriod,
   getLatestAnalytics,
-} = await import("@moneyforward-daily-action/db");
+} = await import("@mf-dashboard/db");
 
 const mockDb = {} as any;
 const groupId = "test-group";

@@ -1,4 +1,4 @@
-import type { AnalyticsMetrics } from "@moneyforward-daily-action/db";
+import type { AnalyticsMetrics } from "@mf-dashboard/db";
 import { Shield } from "lucide-react";
 import { RadarChart } from "../charts/radar-chart";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";

@@ -1,8 +1,8 @@
 import type { ZodObject } from "zod";
+import { createFinancialTools, createAnalysisTools } from "@mf-dashboard/analytics";
+import { getDb, getCurrentGroup } from "@mf-dashboard/db";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { createFinancialTools, createAnalysisTools } from "@moneyforward-daily-action/analytics";
-import { getDb, getCurrentGroup } from "@moneyforward-daily-action/db";
 
 const db = getDb();
 const group = getCurrentGroup(db);

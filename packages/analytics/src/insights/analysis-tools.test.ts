@@ -4,7 +4,7 @@ import { createAnalysisTools } from "./analysis-tools";
 // Fix time to 2025-03-15 so that "2025-03" is the current month and test data (2025-01, 2025-02) passes through
 vi.useFakeTimers({ now: new Date("2025-03-15T12:00:00Z") });
 
-vi.mock("@moneyforward-daily-action/db", () => ({
+vi.mock("@mf-dashboard/db", () => ({
   getMonthlySummaries: vi.fn(() => [
     { month: "2025-02", totalIncome: 310000, totalExpense: 210000, netIncome: 100000 },
     { month: "2025-01", totalIncome: 300000, totalExpense: 200000, netIncome: 100000 },
@@ -55,7 +55,7 @@ const {
   getFinancialMetrics,
   getAvailableMonths,
   getMonthlyCategoryTotals,
-} = await import("@moneyforward-daily-action/db");
+} = await import("@mf-dashboard/db");
 
 const { analyzeMoMTrend } = await import("./analyze-mom-trend.js");
 const { analyzeSpendingComparison } = await import("./analyze-spending-comparison.js");

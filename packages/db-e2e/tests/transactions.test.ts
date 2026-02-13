@@ -1,13 +1,13 @@
-import { loginWithAuthState } from "@moneyforward-daily-action/crawler/auth/login";
-import { hasAuthState } from "@moneyforward-daily-action/crawler/auth/state";
-import { createBrowserContext } from "@moneyforward-daily-action/crawler/browser/context";
-import { scrapeCashFlowHistory } from "@moneyforward-daily-action/crawler/scrapers/cash-flow-history";
+import { loginWithAuthState } from "@mf-dashboard/crawler/auth/login";
+import { hasAuthState } from "@mf-dashboard/crawler/auth/state";
+import { createBrowserContext } from "@mf-dashboard/crawler/browser/context";
+import { scrapeCashFlowHistory } from "@mf-dashboard/crawler/scrapers/cash-flow-history";
 import {
   getAllGroups as getPageGroups,
   switchGroup,
   createGroupScope,
-} from "@moneyforward-daily-action/crawler/scrapers/group";
-import { getDb, closeDb, getAllGroups as getDbGroups } from "@moneyforward-daily-action/db";
+} from "@mf-dashboard/crawler/scrapers/group";
+import { getDb, closeDb, getAllGroups as getDbGroups } from "@mf-dashboard/db";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { chromium, type Browser, type BrowserContext, type Page } from "playwright";

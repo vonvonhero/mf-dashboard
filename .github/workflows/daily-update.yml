@@ -39,7 +39,7 @@ jobs:
         with:
           mode: restore
           enabled: ${{ vars.CACHE_AUTH_STATE }}
-      - run: pnpm --filter @moneyforward-daily-action/crawler start
+      - run: pnpm --filter @mf-dashboard/crawler start
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           OP_VAULT: ${{ secrets.OP_VAULT }}

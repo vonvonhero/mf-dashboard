@@ -1,5 +1,5 @@
-import type { Portfolio } from "@moneyforward-daily-action/db/types";
-import { getHoldingsWithLatestValues, type Db } from "@moneyforward-daily-action/db";
+import type { Portfolio } from "@mf-dashboard/db/types";
+import { getHoldingsWithLatestValues, type Db } from "@mf-dashboard/db";
 
 export type HoldingComparison = {
   groupId: string;

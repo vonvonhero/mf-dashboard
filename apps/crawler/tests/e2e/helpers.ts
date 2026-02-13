@@ -1,6 +1,6 @@
 import type { Browser, BrowserContext, Page } from "playwright";
-import { initDb } from "@moneyforward-daily-action/db";
-import { mfUrls } from "@moneyforward-daily-action/meta/urls";
+import { initDb } from "@mf-dashboard/db";
+import { mfUrls } from "@mf-dashboard/meta/urls";
 import { existsSync, unlinkSync } from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";

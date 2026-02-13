@@ -29,9 +29,9 @@ description: Use when adding new scraping targets to the crawler
 
 ```typescript
 // apps/crawler/src/scrapers/my-feature.ts
-import type { MyData } from "@moneyforward-daily-action/db/types";
+import type { MyData } from "@mf-dashboard/db/types";
 import type { Page } from "playwright";
-import { mfUrls } from "@moneyforward-daily-action/meta";
+import { mfUrls } from "@mf-dashboard/meta";
 import { debug } from "../logger.js";
 import { parseJapaneseNumber } from "../parsers.js";
 
@@ -92,9 +92,9 @@ export const mfUrls = {
 
 ### Running Tests
 
-- Unit: `pnpm --filter @moneyforward-daily-action/crawler test`
-- E2E: `pnpm --filter @moneyforward-daily-action/crawler test:e2e`
-- Local manual testing: `SKIP_REFRESH=true pnpm --filter @moneyforward-daily-action/crawler start`
+- Unit: `pnpm --filter @mf-dashboard/crawler test`
+- E2E: `pnpm --filter @mf-dashboard/crawler test:e2e`
+- Local manual testing: `SKIP_REFRESH=true pnpm --filter @mf-dashboard/crawler start`
 - Debug scripts go in `debug/` directory
 - Screenshots saved to `debug/` directory
 

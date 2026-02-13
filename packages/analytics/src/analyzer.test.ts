@@ -4,7 +4,7 @@ const mockSaveAnalyticsReport = vi.fn();
 const mockGenerateInsights = vi.fn();
 const mockIsLLMEnabled = vi.fn();
 
-vi.mock("@moneyforward-daily-action/db/repository/analytics", () => ({
+vi.mock("@mf-dashboard/db/repository/analytics", () => ({
   saveAnalyticsReport: (...args: any[]) => mockSaveAnalyticsReport(...args),
 }));
 

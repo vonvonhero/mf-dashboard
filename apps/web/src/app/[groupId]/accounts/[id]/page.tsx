@@ -4,7 +4,7 @@ import {
   getAccountByMfId,
   getAllGroups,
   isDatabaseAvailable,
-} from "@moneyforward-daily-action/db";
+} from "@mf-dashboard/db";
 import { AccountDetailContent } from "../../../accounts/[id]/page";
 
 export async function generateStaticParams() {

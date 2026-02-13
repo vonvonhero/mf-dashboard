@@ -1,4 +1,4 @@
-import type { Group, ScrapedData } from "@moneyforward-daily-action/db/types";
+import type { Group, ScrapedData } from "@mf-dashboard/db/types";
 import type { Page } from "playwright";
 import type { ScrapeOptions } from "./types.js";
 import { log, warn, section } from "./logger.js";

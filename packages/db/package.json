@@ -1,5 +1,5 @@
 {
-  "name": "@moneyforward-daily-action/db",
+  "name": "@mf-dashboard/db",
   "version": "0.0.0",
   "private": true,
   "type": "module",

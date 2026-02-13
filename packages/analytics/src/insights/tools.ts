@@ -1,4 +1,4 @@
-import type { Db } from "@moneyforward-daily-action/db";
+import type { Db } from "@mf-dashboard/db";
 import {
   getAccountsWithAssets,
   getAccountsGroupedByCategory,
@@ -23,7 +23,7 @@ import {
   getCategoryChangesForPeriod,
   getFinancialMetrics,
   getLatestAnalytics,
-} from "@moneyforward-daily-action/db";
+} from "@mf-dashboard/db";
 import { tool } from "ai";
 import { z } from "zod";
 

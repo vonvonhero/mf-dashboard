@@ -1,4 +1,4 @@
-import { getLatestAnalytics } from "@moneyforward-daily-action/db";
+import { getLatestAnalytics } from "@mf-dashboard/db";
 import { Lightbulb } from "lucide-react";
 import { InsightsBalanceCard } from "../../components/info/insights-balance-card";
 import { InsightsHealthScoreCard } from "../../components/info/insights-health-score-card";

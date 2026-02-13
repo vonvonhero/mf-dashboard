@@ -1,5 +1,5 @@
-import { getAccountByMfId } from "@moneyforward-daily-action/db";
-import { getHoldingsByAccountId } from "@moneyforward-daily-action/db";
+import { getAccountByMfId } from "@mf-dashboard/db";
+import { getHoldingsByAccountId } from "@mf-dashboard/db";
 import { WalletIcon } from "lucide-react";
 import { AmountDisplay } from "../ui/amount-display";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";

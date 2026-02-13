@@ -1,5 +1,5 @@
-import { getAccountByMfId } from "@moneyforward-daily-action/db";
-import { getHoldingsByAccountId, getHoldingsWithLatestValues } from "@moneyforward-daily-action/db";
+import { getAccountByMfId } from "@mf-dashboard/db";
+import { getHoldingsByAccountId, getHoldingsWithLatestValues } from "@mf-dashboard/db";
 import { TrendingUp } from "lucide-react";
 import { EmptyState } from "../ui/empty-state";
 import { UnrealizedGainCardClient } from "./unrealized-gain-card.client";

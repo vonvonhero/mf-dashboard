@@ -1,9 +1,5 @@
 import type { Metadata } from "next";
-import {
-  getAllGroups,
-  getAvailableMonths,
-  isDatabaseAvailable,
-} from "@moneyforward-daily-action/db";
+import { getAllGroups, getAvailableMonths, isDatabaseAvailable } from "@mf-dashboard/db";
 import { formatMonth } from "../../../../lib/format";
 import { CFMonthContent } from "../../../cf/[month]/page";
 

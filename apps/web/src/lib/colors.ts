@@ -1,4 +1,4 @@
-import type { CategoryName } from "@moneyforward-daily-action/meta/categories";
+import type { CategoryName } from "@mf-dashboard/meta/categories";
 
 const CATEGORY_VAR_MAP: Record<CategoryName, string> = {
   "預金・現金・暗号資産": "--color-asset-deposit",

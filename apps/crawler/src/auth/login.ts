@@ -1,5 +1,5 @@
 import type { BrowserContext, Page } from "playwright";
-import { mfUrls } from "@moneyforward-daily-action/meta/urls";
+import { mfUrls } from "@mf-dashboard/meta/urls";
 import { log, debug } from "../logger.js";
 import { getCredentials, getOTP } from "./credentials.js";
 import { hasAuthState, saveAuthState } from "./state.js";

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { getExpenseByFixedVariable } from "@moneyforward-daily-action/db";
+import { getExpenseByFixedVariable } from "@mf-dashboard/db";
 import { mocked } from "storybook/test";
 import { FixedVariableBreakdown } from "./fixed-variable-breakdown";
 

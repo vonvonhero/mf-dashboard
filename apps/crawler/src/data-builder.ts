@@ -1,4 +1,4 @@
-import type { ScrapedData } from "@moneyforward-daily-action/db/types";
+import type { ScrapedData } from "@mf-dashboard/db/types";
 import type { GlobalData, GroupData } from "./scraper.js";
 
 /**

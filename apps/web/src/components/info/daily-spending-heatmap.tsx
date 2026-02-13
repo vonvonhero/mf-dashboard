@@ -1,4 +1,4 @@
-import { getTransactionsByMonth } from "@moneyforward-daily-action/db";
+import { getTransactionsByMonth } from "@mf-dashboard/db";
 import { parseMonthString } from "../../lib/calendar";
 import { DailySpendingHeatmapClient } from "./daily-spending-heatmap.client";
 

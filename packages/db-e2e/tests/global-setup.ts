@@ -1,5 +1,5 @@
-import { loginWithAuthState } from "@moneyforward-daily-action/crawler/auth/login";
-import { createBrowserContext } from "@moneyforward-daily-action/crawler/browser/context";
+import { loginWithAuthState } from "@mf-dashboard/crawler/auth/login";
+import { createBrowserContext } from "@mf-dashboard/crawler/browser/context";
 import path from "node:path";
 import { chromium } from "playwright";
 

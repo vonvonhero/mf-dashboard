@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { getAssetHistoryWithCategories } from "@moneyforward-daily-action/db";
+import { getAssetHistoryWithCategories } from "@mf-dashboard/db";
 import { userEvent, within, mocked } from "storybook/test";
 import { AssetHistoryChart } from "./asset-history-chart";
 

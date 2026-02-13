@@ -1,4 +1,4 @@
-import { getExpenseByFixedVariable } from "@moneyforward-daily-action/db";
+import { getExpenseByFixedVariable } from "@mf-dashboard/db";
 import { SlidersHorizontal } from "lucide-react";
 import { AmountDisplay } from "../ui/amount-display";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";

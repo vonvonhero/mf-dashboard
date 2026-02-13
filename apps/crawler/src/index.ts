@@ -1,17 +1,11 @@
-import { analyzeFinancialData } from "@moneyforward-daily-action/analytics";
-import { initDb, closeDb } from "@moneyforward-daily-action/db";
-import {
-  updateAccountCategory,
-  buildAccountIdMap,
-} from "@moneyforward-daily-action/db/repository/accounts";
-import {
-  saveScrapedData,
-  saveGroupOnlyData,
-} from "@moneyforward-daily-action/db/repository/save-scraped-data";
+import { analyzeFinancialData } from "@mf-dashboard/analytics";
+import { initDb, closeDb } from "@mf-dashboard/db";
+import { updateAccountCategory, buildAccountIdMap } from "@mf-dashboard/db/repository/accounts";
+import { saveScrapedData, saveGroupOnlyData } from "@mf-dashboard/db/repository/save-scraped-data";
 import {
   hasTransactionsForMonth,
   saveTransactionsForMonth,
-} from "@moneyforward-daily-action/db/repository/transactions";
+} from "@mf-dashboard/db/repository/transactions";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";

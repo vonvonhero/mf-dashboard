@@ -1,4 +1,4 @@
-import { getAvailableMonths } from "@moneyforward-daily-action/db";
+import { getAvailableMonths } from "@mf-dashboard/db";
 import { MonthSelectorClient } from "./month-selector.client";
 
 interface MonthSelectorProps {

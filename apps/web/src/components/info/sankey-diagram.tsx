@@ -1,4 +1,4 @@
-import { getMonthlyCategoryTotals } from "@moneyforward-daily-action/db";
+import { getMonthlyCategoryTotals } from "@mf-dashboard/db";
 import { GitBranch } from "lucide-react";
 import { EmptyState } from "../ui/empty-state";
 import { SankeyDiagramClient } from "./sankey-diagram.client";

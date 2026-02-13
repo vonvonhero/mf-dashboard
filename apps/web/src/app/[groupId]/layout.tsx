@@ -1,4 +1,4 @@
-import { getAllGroups, isDatabaseAvailable } from "@moneyforward-daily-action/db";
+import { getAllGroups, isDatabaseAvailable } from "@mf-dashboard/db";
 import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {

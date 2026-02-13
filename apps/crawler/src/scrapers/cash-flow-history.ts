@@ -1,6 +1,6 @@
-import type { CashFlowSummary, CashFlowItem } from "@moneyforward-daily-action/db/types";
+import type { CashFlowSummary, CashFlowItem } from "@mf-dashboard/db/types";
 import type { Locator, Page } from "playwright";
-import { mfUrls } from "@moneyforward-daily-action/meta/urls";
+import { mfUrls } from "@mf-dashboard/meta/urls";
 import type { CashFlowHistoryResult } from "../types.js";
 import { log, debug } from "../logger.js";
 import { parseJapaneseNumber, convertDateToIso } from "../parsers.js";

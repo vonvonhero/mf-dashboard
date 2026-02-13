@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { isDatabaseAvailable } from "@moneyforward-daily-action/db";
+import { isDatabaseAvailable } from "@mf-dashboard/db";
 import "./globals.css";
 import { DatabaseZap } from "lucide-react";
 import { AccountNotifications } from "../components/info/account-notifications";

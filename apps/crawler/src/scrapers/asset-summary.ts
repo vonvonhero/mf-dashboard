@@ -1,6 +1,6 @@
-import type { AssetSummary } from "@moneyforward-daily-action/db/types";
+import type { AssetSummary } from "@mf-dashboard/db/types";
 import type { Page } from "playwright";
-import { mfUrls } from "@moneyforward-daily-action/meta/urls";
+import { mfUrls } from "@mf-dashboard/meta/urls";
 import { debug } from "../logger.js";
 
 export async function getAssetSummary(page: Page): Promise<AssetSummary> {

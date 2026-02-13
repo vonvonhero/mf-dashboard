@@ -192,8 +192,8 @@ Monorepo using pnpm workspaces + Turborepo.
 
 ### Running the Crawler
 
-- Run: `pnpm --filter @moneyforward-daily-action/crawler start`
-- Development/Debug: `pnpm --filter @moneyforward-daily-action/crawler dev:scrape`
+- Run: `pnpm --filter @mf-dashboard/crawler start`
+- Development/Debug: `pnpm --filter @mf-dashboard/crawler dev:scrape`
 - **When LLM (Claude) runs scraping, use `dev:scrape`**
 - If `data/auth-state.json` exists, it will be used automatically
 
@@ -208,7 +208,7 @@ Scraping mode is automatically determined by database existence:
 
 ```bash
 rm data/moneyforward.db
-pnpm --filter @moneyforward-daily-action/crawler start
+pnpm --filter @mf-dashboard/crawler start
 ```
 
 **For testing**: Use `SCRAPE_MODE=history` or `SCRAPE_MODE=month` to force a specific mode
@@ -216,23 +216,23 @@ pnpm --filter @moneyforward-daily-action/crawler start
 ### Database
 
 - SQLite database is located at `data/moneyforward.db`
-- Generate migration: `pnpm --filter @moneyforward-daily-action/db exec drizzle-kit generate`
-- Apply migration: `pnpm --filter @moneyforward-daily-action/db exec drizzle-kit migrate`
+- Generate migration: `pnpm --filter @mf-dashboard/db exec drizzle-kit generate`
+- Apply migration: `pnpm --filter @mf-dashboard/db exec drizzle-kit migrate`
 - Database Studio: `pnpm db:studio`
 
 ### Test & Storybook Data
 
 - When creating dummy data for tests or Storybook, **do not reference** `data/moneyforward.db` (contains personal information)
 - `data/demo.db` can be used as reference
-- Run web app with demo data: `pnpm --filter @moneyforward-daily-action/web dev:demo`
+- Run web app with demo data: `pnpm --filter @mf-dashboard/web dev:demo`
 
 ### Testing
 
 - Run all tests: `pnpm test`
-- Web unit tests: `pnpm --filter @moneyforward-daily-action/web test:unit`
-- Web Storybook tests: `pnpm --filter @moneyforward-daily-action/web test:storybook`
-- Web E2E tests: `pnpm --filter @moneyforward-daily-action/web test:e2e`
-- Storybook: `pnpm --filter @moneyforward-daily-action/web storybook`
+- Web unit tests: `pnpm --filter @mf-dashboard/web test:unit`
+- Web Storybook tests: `pnpm --filter @mf-dashboard/web test:storybook`
+- Web E2E tests: `pnpm --filter @mf-dashboard/web test:e2e`
+- Storybook: `pnpm --filter @mf-dashboard/web storybook`
 
 ### Debugging
 

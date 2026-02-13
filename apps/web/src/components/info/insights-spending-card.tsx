@@ -1,4 +1,4 @@
-import type { AnalyticsMetrics, AnalyticsInsights } from "@moneyforward-daily-action/db";
+import type { AnalyticsMetrics, AnalyticsInsights } from "@mf-dashboard/db";
 import { ShoppingCart } from "lucide-react";
 import { formatCurrency, formatPercent } from "../../lib/format";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";

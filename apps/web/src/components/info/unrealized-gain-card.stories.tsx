@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { getAccountByMfId } from "@moneyforward-daily-action/db";
-import { getHoldingsByAccountId, getHoldingsWithLatestValues } from "@moneyforward-daily-action/db";
+import { getAccountByMfId } from "@mf-dashboard/db";
+import { getHoldingsByAccountId, getHoldingsWithLatestValues } from "@mf-dashboard/db";
 import { mocked } from "storybook/test";
 import { UnrealizedGainCard } from "./unrealized-gain-card";
 

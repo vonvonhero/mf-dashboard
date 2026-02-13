@@ -1,6 +1,6 @@
-import type { RefreshResult } from "@moneyforward-daily-action/db/types";
+import type { RefreshResult } from "@mf-dashboard/db/types";
 import type { Page } from "playwright";
-import { mfUrls } from "@moneyforward-daily-action/meta/urls";
+import { mfUrls } from "@mf-dashboard/meta/urls";
 import { debug, info, warn } from "../logger.js";
 
 const MAX_WAIT_TIME_MS = 20 * 60 * 1000; // 20 minutes max

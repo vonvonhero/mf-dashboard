@@ -26,7 +26,7 @@ async function getOpClient(): Promise<Client> {
   debug("1Password SDK クライアントを初期化しています...");
   _opClient = await createClient({
     auth: token,
-    integrationName: "moneyforward-daily-action",
+    integrationName: "mf-dashboard",
     integrationVersion: "1.0.0",
   });
 

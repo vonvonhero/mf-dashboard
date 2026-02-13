@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { getTransactions, getTransactionsByMonth } from "@moneyforward-daily-action/db";
+import { getTransactions, getTransactionsByMonth } from "@mf-dashboard/db";
 import { mocked } from "storybook/test";
 import { DateFilterProvider } from "../date-filter-context";
 import { TransactionTable } from "./transaction-table";

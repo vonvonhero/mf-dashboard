@@ -27,7 +27,7 @@
     "oxlint": "1.47.0",
     "oxlint-tsgolint": "0.12.2",
     "tsx": "4.21.0",
-    "turbo": "2.8.8"
+    "turbo": "2.8.9"
   },
   "packageManager": "pnpm@10.29.3"
 }

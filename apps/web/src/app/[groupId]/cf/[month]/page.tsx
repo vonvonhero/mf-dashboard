@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import { getAllGroups, getAvailableMonths, isDatabaseAvailable } from "@mf-dashboard/db";
+import type { Metadata } from "next";
 import { formatMonth } from "../../../../lib/format";
 import { CFMonthContent } from "../../../cf/[month]/page";
 

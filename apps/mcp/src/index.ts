@@ -1,8 +1,8 @@
-import type { ZodObject } from "zod";
 import { createFinancialTools, createAnalysisTools } from "@mf-dashboard/analytics";
 import { getDb, getCurrentGroup } from "@mf-dashboard/db";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import type { ZodObject } from "zod";
 
 async function main() {
   const db = getDb();

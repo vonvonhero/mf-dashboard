@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import type { Db } from "../index";
-import type { Group } from "../types";
 import { schema } from "../index";
+import type { Group } from "../types";
 import { now, upsertById } from "../utils";
 
 export async function getCurrentGroupId(db: Db): Promise<string | null> {

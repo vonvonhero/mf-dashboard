@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
 import { describe, test, expect, beforeAll, beforeEach, afterAll } from "vitest";
-import type { AccountStatus } from "../types";
 import * as schema from "../schema/schema";
 import { createTestDb, resetTestDb, closeTestDb } from "../test-helpers";
+import type { AccountStatus } from "../types";
 import { upsertAccount, saveAccountStatus, updateAccountCategory } from "./accounts";
 
 type Db = Awaited<ReturnType<typeof createTestDb>>;

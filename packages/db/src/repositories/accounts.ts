@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import type { Db } from "../index";
-import type { AccountStatus } from "../types";
 import { schema } from "../index";
+import type { AccountStatus } from "../types";
 import { now, convertToIsoDate, upsertById } from "../utils";
 import { getOrCreateInstitutionCategory } from "./institution-categories";
 

@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { getLatestMonthlySummary } from "@mf-dashboard/db";
 import { getTransactionsByMonth } from "@mf-dashboard/db";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { mocked } from "storybook/test";
 import { MonthlyBalanceCard } from "./monthly-balance-card";
 

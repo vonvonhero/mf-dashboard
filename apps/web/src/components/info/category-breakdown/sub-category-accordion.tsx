@@ -1,8 +1,8 @@
 import { ChevronRight } from "lucide-react";
-import type { SubCategoryData } from "./types";
 import { formatDateShort } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
 import { AmountDisplay } from "../../ui/amount-display";
+import type { SubCategoryData } from "./types";
 
 interface SubCategoryAccordionProps {
   subCategory: SubCategoryData;

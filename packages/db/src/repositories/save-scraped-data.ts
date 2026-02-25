@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import type { Db } from "../index";
-import type { ScrapedData } from "../types";
 import { schema } from "../index";
+import type { ScrapedData } from "../types";
 import { now } from "../utils";
 import { upsertAccounts, saveAccountStatuses, buildAccountIdMap } from "./accounts";
 import { getOrCreateCategory } from "./categories";

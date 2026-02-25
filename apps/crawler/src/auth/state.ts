@@ -1,6 +1,6 @@
-import type { BrowserContext } from "playwright";
 import { existsSync } from "node:fs";
 import path from "node:path";
+import type { BrowserContext } from "playwright";
 import { debug } from "../logger.js";
 
 // Auth state file path

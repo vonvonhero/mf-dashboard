@@ -1,11 +1,11 @@
-import type { Browser, BrowserContext } from "playwright";
+import path from "node:path";
 import { getDb, schema } from "@mf-dashboard/db";
 import { saveScrapedData, saveGroupOnlyData } from "@mf-dashboard/db/repository/save-scraped-data";
 import { eq } from "drizzle-orm";
-import path from "node:path";
+import type { Browser, BrowserContext } from "playwright";
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
-import type { ScrapeResult } from "../../src/scraper.js";
 import { buildScrapedData, buildGroupOnlyScrapedData } from "../../src/data-builder.js";
+import type { ScrapeResult } from "../../src/scraper.js";
 import { scrapeAllGroups } from "../../src/scraper.js";
 import { isNoGroup, createGroupScope } from "../../src/scrapers/group.js";
 import {

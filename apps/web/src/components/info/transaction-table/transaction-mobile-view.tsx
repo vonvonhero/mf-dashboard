@@ -1,4 +1,3 @@
-import type { Transaction } from "./types";
 import { getCategoryColor } from "../../../lib/colors";
 import { formatDate } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
@@ -6,6 +5,7 @@ import { AmountDisplay } from "../../ui/amount-display";
 import { Badge } from "../../ui/badge";
 import { EmptyState } from "../../ui/empty-state";
 import { TypeBadge } from "../../ui/type-badge";
+import type { Transaction } from "./types";
 
 interface TransactionMobileViewProps {
   transactions: Transaction[];

@@ -1,6 +1,6 @@
-import type { TransactionKpi } from "./types";
 import { AmountDisplay } from "../../ui/amount-display";
 import { MetricLabel } from "../../ui/metric-label";
+import type { TransactionKpi } from "./types";
 
 interface TransactionKpiSummaryProps {
   kpi: TransactionKpi;

@@ -1,9 +1,9 @@
 import { ChevronDown, TrendingDown, TrendingUp } from "lucide-react";
-import type { CategoryData } from "./types";
 import { getCategoryColor } from "../../../lib/colors";
 import { cn } from "../../../lib/utils";
 import { AmountDisplay, getAmountColorClass } from "../../ui/amount-display";
 import { SubCategoryAccordion } from "./sub-category-accordion";
+import type { CategoryData } from "./types";
 
 interface CategoryAccordionProps {
   item: CategoryData;

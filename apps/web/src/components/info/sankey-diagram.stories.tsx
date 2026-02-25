@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { getMonthlyCategoryTotals } from "@mf-dashboard/db";
 import { getTransactionsByMonth } from "@mf-dashboard/db";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { mocked } from "storybook/test";
 import { SankeyDiagram } from "./sankey-diagram";
 

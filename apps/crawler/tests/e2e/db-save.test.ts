@@ -1,8 +1,8 @@
-import type { Browser, BrowserContext } from "playwright";
+import path from "node:path";
 import { getDb, schema } from "@mf-dashboard/db";
 import { saveScrapedData } from "@mf-dashboard/db/repository/save-scraped-data";
 import { eq } from "drizzle-orm";
-import path from "node:path";
+import type { Browser, BrowserContext } from "playwright";
 import { describe, test, expect, beforeAll, afterAll } from "vitest";
 import { scrape } from "../../src/scraper.js";
 import {

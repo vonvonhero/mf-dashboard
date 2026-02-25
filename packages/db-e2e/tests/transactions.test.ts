@@ -1,3 +1,5 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { loginWithAuthState } from "@mf-dashboard/crawler/auth/login";
 import { hasAuthState } from "@mf-dashboard/crawler/auth/state";
 import { createBrowserContext } from "@mf-dashboard/crawler/browser/context";
@@ -8,8 +10,6 @@ import {
   createGroupScope,
 } from "@mf-dashboard/crawler/scrapers/group";
 import { getDb, closeDb, getAllGroups as getDbGroups } from "@mf-dashboard/db";
-import * as fs from "node:fs";
-import * as path from "node:path";
 import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import {

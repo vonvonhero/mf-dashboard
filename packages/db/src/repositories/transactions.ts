@@ -1,7 +1,7 @@
 import { eq, like, sql } from "drizzle-orm";
 import type { Db } from "../index";
-import type { CashFlowItem } from "../types";
 import { schema } from "../index";
+import type { CashFlowItem } from "../types";
 import { convertToIsoDate, now, upsertById } from "../utils";
 
 const BATCH_SIZE = 500;

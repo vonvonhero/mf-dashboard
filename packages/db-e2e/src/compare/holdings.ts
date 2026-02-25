@@ -1,5 +1,5 @@
-import type { Portfolio } from "@mf-dashboard/db/types";
 import { getHoldingsWithLatestValues, type Db } from "@mf-dashboard/db";
+import type { Portfolio } from "@mf-dashboard/db/types";
 
 export type HoldingComparison = {
   groupId: string;

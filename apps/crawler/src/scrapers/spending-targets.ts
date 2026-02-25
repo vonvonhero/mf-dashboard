@@ -1,7 +1,7 @@
 import type { SpendingTargetsData, SpendingTarget } from "@mf-dashboard/db/types";
-import type { Page } from "playwright";
 import { LARGE_CATEGORY_NAME_BY_ID } from "@mf-dashboard/meta/categories";
 import { mfUrls } from "@mf-dashboard/meta/urls";
+import type { Page } from "playwright";
 import { debug } from "../logger.js";
 
 export async function getSpendingTargets(page: Page): Promise<SpendingTargetsData> {

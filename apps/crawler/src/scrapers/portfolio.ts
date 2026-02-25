@@ -1,7 +1,7 @@
 import type { Portfolio, PortfolioItem } from "@mf-dashboard/db/types";
-import type { Locator, Page } from "playwright";
 import { ASSET_CATEGORIES } from "@mf-dashboard/meta/categories";
 import { mfUrls } from "@mf-dashboard/meta/urls";
+import type { Locator, Page } from "playwright";
 import { debug } from "../logger.js";
 import { parseDecimalNumber, parseJapaneseNumber, parsePercentage } from "../parsers.js";
 

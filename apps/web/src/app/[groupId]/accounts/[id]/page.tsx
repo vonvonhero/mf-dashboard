@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
 import {
   getAllAccountMfIds,
   getAccountByMfId,
   getAllGroups,
   isDatabaseAvailable,
 } from "@mf-dashboard/db";
+import type { Metadata } from "next";
 import { AccountDetailContent } from "../../../accounts/[id]/page";
 
 export async function generateStaticParams() {

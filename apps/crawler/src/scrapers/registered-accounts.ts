@@ -1,6 +1,6 @@
 import type { RegisteredAccounts, AccountStatus } from "@mf-dashboard/db/types";
-import type { Page } from "playwright";
 import { mfUrls } from "@mf-dashboard/meta/urls";
+import type { Page } from "playwright";
 import { debug } from "../logger.js";
 import { parseJapaneseNumber } from "../parsers.js";
 

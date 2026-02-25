@@ -2,7 +2,6 @@
 
 import { ListOrdered } from "lucide-react";
 import { useRef } from "react";
-import type { Transaction } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { Pagination } from "../../ui/pagination";
 import { useDateFilter } from "../date-filter-context";
@@ -10,6 +9,7 @@ import { TransactionDesktopView } from "./transaction-desktop-view";
 import { TransactionFilters } from "./transaction-filters";
 import { TransactionKpiSummary } from "./transaction-kpi-summary";
 import { TransactionMobileView } from "./transaction-mobile-view";
+import type { Transaction } from "./types";
 import { useTransactionFiltering } from "./use-transaction-filtering";
 
 function getDateRange(transactions: Transaction[]): { start: string; end: string } | null {

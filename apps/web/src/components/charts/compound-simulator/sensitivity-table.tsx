@@ -1,6 +1,6 @@
-import type { SensitivityRow } from "./simulate-monte-carlo";
 import { formatCurrency } from "../../../lib/format";
 import { getSecurityLabel, type SecurityLevel } from "./compound-simulator-utils";
+import type { SensitivityRow } from "./simulate-monte-carlo";
 
 const levelStyles: Record<SecurityLevel, string> = {
   safe: "text-balance-positive",

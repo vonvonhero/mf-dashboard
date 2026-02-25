@@ -1,4 +1,3 @@
-import type { SortColumn, Transaction } from "./types";
 import { getCategoryColor } from "../../../lib/colors";
 import { formatDate } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
@@ -8,6 +7,7 @@ import { EmptyState } from "../../ui/empty-state";
 import { SortableTableHead } from "../../ui/sortable-table-head";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "../../ui/table";
 import { TypeBadge } from "../../ui/type-badge";
+import type { SortColumn, Transaction } from "./types";
 
 interface TransactionDesktopViewProps {
   transactions: Transaction[];

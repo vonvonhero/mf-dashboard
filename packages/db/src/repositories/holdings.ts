@@ -1,7 +1,7 @@
 import { eq, and } from "drizzle-orm";
 import type { Db } from "../index";
-import type { HoldingType } from "../types";
 import { schema } from "../index";
+import type { HoldingType } from "../types";
 import { now, upsertById } from "../utils";
 
 // 毎回新規作成（同じ銘柄でも別レコードとして保存）

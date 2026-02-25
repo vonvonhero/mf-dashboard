@@ -1,7 +1,7 @@
 import type { KnownBlock } from "@slack/web-api";
 import { WebClient } from "@slack/web-api";
-import type { ScrapedData } from "./types.js";
 import { log, info, error } from "./logger.js";
+import type { ScrapedData } from "./types.js";
 
 let client: WebClient | null = null;
 

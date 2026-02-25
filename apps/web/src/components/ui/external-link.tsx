@@ -1,5 +1,5 @@
-import type { AnchorHTMLAttributes, Ref } from "react";
 import { ExternalLink as ExternalLinkIcon } from "lucide-react";
+import type { AnchorHTMLAttributes, Ref } from "react";
 import { cn } from "../../lib/utils";
 
 interface ExternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {

@@ -1,6 +1,5 @@
 import type { Group, ScrapedData } from "@mf-dashboard/db/types";
 import type { Page } from "playwright";
-import type { ScrapeOptions } from "./types.js";
 import { log, warn, section } from "./logger.js";
 import { getAssetHistory } from "./scrapers/asset-history.js";
 import { getAssetItems } from "./scrapers/asset-items.js";
@@ -18,6 +17,7 @@ import { getPortfolio } from "./scrapers/portfolio.js";
 import { clickRefreshButton } from "./scrapers/refresh.js";
 import { getRegisteredAccounts } from "./scrapers/registered-accounts.js";
 import { getSpendingTargets } from "./scrapers/spending-targets.js";
+import type { ScrapeOptions } from "./types.js";
 
 // ============================================================
 // Types

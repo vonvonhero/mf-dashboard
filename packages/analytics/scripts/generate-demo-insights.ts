@@ -6,9 +6,9 @@
  *     pnpm --filter @mf-dashboard/analytics generate:demo-insights
  */
 
-import { getDb } from "@mf-dashboard/db";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { getDb } from "@mf-dashboard/db";
 import { generateInsights } from "../src/insights/generator.js";
 
 const GROUP_IDS = ["0", "demo_group_001", "demo_group_002"];

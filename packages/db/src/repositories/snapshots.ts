@@ -1,6 +1,6 @@
 import type { Db } from "../index";
-import type { RefreshResult } from "../types";
 import { schema } from "../index";
+import type { RefreshResult } from "../types";
 import { now } from "../utils";
 
 // 実行ごとに新しいスナップショットを作成（同じ日でも複数作成可能）

@@ -1,7 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { CircleHelp } from "lucide-react";
+import type { ReactNode } from "react";
 import { cn } from "../../lib/utils";
 import { Tooltip } from "./tooltip";
 

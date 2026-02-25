@@ -1,6 +1,6 @@
 import type { AssetItem } from "@mf-dashboard/db/types";
-import type { Page } from "playwright";
 import { mfUrls } from "@mf-dashboard/meta/urls";
+import type { Page } from "playwright";
 import { debug } from "../logger.js";
 import { calculateChange } from "../parsers.js";
 

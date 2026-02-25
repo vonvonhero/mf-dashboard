@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
 import { getAccountByMfId, getAllAccountMfIds, isDatabaseAvailable } from "@mf-dashboard/db";
 import { mfUrls } from "@mf-dashboard/meta/urls";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AccountSummaryCard } from "../../../components/info/account-summary-card";
 import { HoldingsTable } from "../../../components/info/holdings-table";

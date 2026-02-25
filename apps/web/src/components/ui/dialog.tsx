@@ -1,7 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
+import type { ReactNode } from "react";
 import { cn } from "../../lib/utils";
 
 interface DialogProps {

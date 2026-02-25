@@ -1,7 +1,7 @@
+import { join } from "node:path";
 import { createClient, type Client } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 import { migrate } from "drizzle-orm/libsql/migrator";
-import { join } from "node:path";
 import type { Db } from "./index";
 import * as schema from "./schema/schema";
 

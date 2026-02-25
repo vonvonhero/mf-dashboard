@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { getTransactions } from "@mf-dashboard/db";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { mocked } from "storybook/test";
 import { TransactionStats } from "./transaction-stats";
 

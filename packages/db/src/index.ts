@@ -1,9 +1,9 @@
-import type { LibSQLDatabase } from "drizzle-orm/libsql";
-import { createClient, type Client } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
-import { migrate } from "drizzle-orm/libsql/migrator";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { createClient, type Client } from "@libsql/client";
+import type { LibSQLDatabase } from "drizzle-orm/libsql";
+import { drizzle } from "drizzle-orm/libsql";
+import { migrate } from "drizzle-orm/libsql/migrator";
 import * as schema from "./schema/schema";
 
 let _db: ReturnType<typeof drizzle<typeof schema>> | null = null;

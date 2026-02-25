@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
 import { describe, test, expect, beforeAll, beforeEach, afterAll, afterEach, vi } from "vitest";
-import type { Group } from "../types";
 import * as schema from "../schema/schema";
 import { createTestDb, resetTestDb, closeTestDb } from "../test-helpers";
+import type { Group } from "../types";
 import { upsertAccount } from "./accounts";
 import {
   upsertGroup,

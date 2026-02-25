@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
 import { getAccountsGroupedByCategory } from "@mf-dashboard/db";
 import { mfUrls } from "@mf-dashboard/meta/urls";
+import type { Metadata } from "next";
 import { AccountCard } from "../../components/info/account-card";
 import { PageLayout } from "../../components/layout/page-layout";
 import { Badge } from "../../components/ui/badge";

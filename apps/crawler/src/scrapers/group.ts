@@ -1,6 +1,6 @@
 import type { Group } from "@mf-dashboard/db/types";
-import type { Page } from "playwright";
 import { mfUrls } from "@mf-dashboard/meta/urls";
+import type { Page } from "playwright";
 import { debug, log, warn } from "../logger.js";
 
 /** 「グループ選択なし」を表す特別なID */

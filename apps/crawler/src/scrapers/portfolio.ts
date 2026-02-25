@@ -5,9 +5,11 @@ import { mfUrls } from "@mf-dashboard/meta/urls";
 import { debug } from "../logger.js";
 import { parseDecimalNumber, parseJapaneseNumber, parsePercentage } from "../parsers.js";
 
-// Asset category constant for points (used for category check in parsing)
-const POINT = ASSET_CATEGORIES[5]; // "ポイント・マイル"
+// Asset category constants
+const POINT =
+  ASSET_CATEGORIES.find((category) => category === "ポイント・マイル") ?? "ポイント・マイル";
 const UNKNOWN_CATEGORY = "不明";
+const FX_CATEGORY = ASSET_CATEGORIES.find((category) => category === "FX") ?? "FX";
 
 // Column indices for each table type
 const CELL_TIMEOUT = 1000;
@@ -45,6 +47,15 @@ const INSURANCE_PENSION_COLUMNS = {
   UNREALIZED_GAIN_PCT: 4,
 } as const;
 const POINT_COLUMNS = { NAME: 0, BALANCE: 4, INSTITUTION: 6 } as const;
+const FX_BALANCE_COLUMNS = { INSTITUTION: 0, NAME: 1, BALANCE: 2 } as const;
+const FX_POSITION_COLUMNS = {
+  PAIR: 0,
+  QUANTITY: 1,
+  CONTRACT_RATE: 2,
+  CURRENT_RATE: 3,
+  UNREALIZED_GAIN: 4,
+  INSTITUTION: 5,
+} as const;
 
 // Helper functions
 async function getCellText(cells: Locator, index: number, defaultValue = ""): Promise<string> {
@@ -74,7 +85,7 @@ async function getInstitutionFromCell(cells: Locator, index: number): Promise<st
 
 // Parse deposits from .table-depo
 async function parseDeposits(page: Page): Promise<PortfolioItem[]> {
-  const rows = page.locator("table.table-depo tbody tr");
+  const rows = page.locator("#portfolio_det_depo table.table-depo tbody tr");
   const count = await rows.count();
   const items: PortfolioItem[] = [];
 
@@ -96,6 +107,80 @@ async function parseDeposits(page: Page): Promise<PortfolioItem[]> {
     });
   }
   return items;
+}
+
+// Parse FX balances from #portfolio_det_fx
+async function parseFx(page: Page): Promise<PortfolioItem[]> {
+  const items: PortfolioItem[] = [];
+
+  // FX balance table uses table-depo class but has different column order from deposits.
+  const balanceRows = page.locator("#portfolio_det_fx table.table-depo tbody tr");
+  const balanceCount = await balanceRows.count();
+  for (let i = 0; i < balanceCount; i++) {
+    const cells = balanceRows.nth(i).locator("td");
+    const [name, institution, balanceText] = await Promise.all([
+      getCellText(cells, FX_BALANCE_COLUMNS.NAME),
+      getCellText(cells, FX_BALANCE_COLUMNS.INSTITUTION),
+      getCellText(cells, FX_BALANCE_COLUMNS.BALANCE, "0"),
+    ]);
+    if (!name) continue;
+
+    items.push({
+      name,
+      type: FX_CATEGORY,
+      institution,
+      balance: parseJapaneseNumber(balanceText),
+    });
+  }
+
+  const positionRows = page.locator("#portfolio_det_fx table.table-fx tbody tr");
+  const positionCount = await positionRows.count();
+  for (let i = 0; i < positionCount; i++) {
+    const cells = positionRows.nth(i).locator("td");
+    const [name, institution, quantityText, contractRateText, currentRateText, unrealizedGainText] =
+      await Promise.all([
+        getCellText(cells, FX_POSITION_COLUMNS.PAIR),
+        getCellText(cells, FX_POSITION_COLUMNS.INSTITUTION),
+        getCellText(cells, FX_POSITION_COLUMNS.QUANTITY),
+        getCellText(cells, FX_POSITION_COLUMNS.CONTRACT_RATE),
+        getCellText(cells, FX_POSITION_COLUMNS.CURRENT_RATE),
+        getCellText(cells, FX_POSITION_COLUMNS.UNREALIZED_GAIN),
+      ]);
+    if (!name) continue;
+    const unrealizedGain = parseJapaneseNumber(unrealizedGainText);
+
+    items.push({
+      name,
+      type: FX_CATEGORY,
+      institution,
+      // MF上のFX合計は、残高テーブルに加えて通貨ペアの評価損益も反映されるため、
+      // 通貨ペア行は評価損益を資産寄与額(amount)として保持する。
+      balance: unrealizedGain,
+      quantity: parseFxQuantity(quantityText),
+      avgCostPrice: parseFxRate(contractRateText),
+      unitPrice: parseFxRate(currentRateText),
+      unrealizedGain: unrealizedGain || undefined,
+    });
+  }
+
+  return items;
+}
+
+export function parseFxQuantity(quantityText: string): number | undefined {
+  if (!quantityText) return undefined;
+  const match = quantityText.match(/\d[\d,]*/);
+  if (!match) return undefined;
+  const quantity = parseDecimalNumber(match[0]);
+  if (!quantity) return undefined;
+  return quantityText.includes("売") ? -quantity : quantity;
+}
+
+export function parseFxRate(rateText: string): number | undefined {
+  if (!rateText) return undefined;
+  const match = rateText.match(/-?\d[\d,]*(?:\.\d+)?/);
+  if (!match) return undefined;
+  const rate = parseDecimalNumber(match[0]);
+  return rate || undefined;
 }
 
 // Helper to convert 0 to undefined only for optional numeric fields
@@ -318,20 +403,22 @@ export async function getPortfolio(page: Page): Promise<Portfolio> {
   // ポートフォリオコンテンツが表示されるまで待機
   await page.locator("h1.heading-normal").first().waitFor({ state: "visible", timeout: 10000 });
 
-  // 4つのパース関数を並列実行
-  const [deposits, stocks, funds, insuranceAndPoints] = await Promise.all([
+  // パース関数を並列実行
+  const [deposits, stocks, funds, insuranceAndPoints, fx] = await Promise.all([
     parseDeposits(page),
     parseStocks(page),
     parseFunds(page),
     parseInsuranceAndPoints(page),
+    parseFx(page),
   ]);
 
   debug(`  .table-depo rows: ${deposits.length}`);
   debug(`  .table-eq rows: ${stocks.length}`);
   debug(`  .table-mf rows: ${funds.length}`);
   debug(`  .table-pns items: ${insuranceAndPoints.length}`);
+  debug(`  FX items: ${fx.length}`);
 
-  const items: PortfolioItem[] = [...deposits, ...stocks, ...funds, ...insuranceAndPoints];
+  const items: PortfolioItem[] = [...deposits, ...stocks, ...funds, ...insuranceAndPoints, ...fx];
 
   if (totalAssets === 0) {
     totalAssets = items.reduce((sum, item) => sum + (item.balance || 0), 0);

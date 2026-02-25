@@ -40,6 +40,7 @@ export const ASSET_CATEGORIES = [
   "保険",
   "年金",
   "ポイント・マイル",
+  "FX",
 ] as const;
 
 /** 全大項目（収入+支出） */

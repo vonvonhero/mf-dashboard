@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { identifyTableTypeFromTitle } from "./portfolio.js";
+import { identifyTableTypeFromTitle, parseFxQuantity, parseFxRate } from "./portfolio.js";
 
 describe("identifyTableTypeFromTitle", () => {
   test("「ポイント・マイル」はそのまま返す", () => {
@@ -30,5 +30,31 @@ describe("identifyTableTypeFromTitle", () => {
     expect(identifyTableTypeFromTitle("")).toBe("不明");
     expect(identifyTableTypeFromTitle("不明なカテゴリ")).toBe("不明");
     expect(identifyTableTypeFromTitle("ポイント")).toBe("不明"); // "ポイント・マイル"ではない
+  });
+});
+
+describe("parseFxQuantity", () => {
+  test("買建は正数で数量を返す", () => {
+    expect(parseFxQuantity("買\n10000")).toBe(10000);
+  });
+
+  test("売建は負数で数量を返す", () => {
+    expect(parseFxQuantity("売\n12,000")).toBe(-12000);
+  });
+
+  test("数量がない場合は undefined", () => {
+    expect(parseFxQuantity("")).toBeUndefined();
+    expect(parseFxQuantity("買")).toBeUndefined();
+  });
+});
+
+describe("parseFxRate", () => {
+  test("レート+日時から先頭のレートを抽出", () => {
+    expect(parseFxRate("0.79\n2025年12月23日 00時00分")).toBe(0.79);
+  });
+
+  test("レートがない場合は undefined", () => {
+    expect(parseFxRate("")).toBeUndefined();
+    expect(parseFxRate("日時のみ")).toBeUndefined();
   });
 });

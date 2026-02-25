@@ -32,6 +32,7 @@ interface PopoverContentProps {
   className?: string;
   align?: "start" | "center" | "end";
   sideOffset?: number;
+  initialFocus?: false | React.RefObject<HTMLElement | null>;
 }
 
 function PopoverContent({
@@ -39,11 +40,13 @@ function PopoverContent({
   className,
   align = "center",
   sideOffset = 4,
+  initialFocus,
 }: PopoverContentProps) {
   return (
     <BasePopover.Portal>
       <BasePopover.Positioner sideOffset={sideOffset} align={align} className="z-[100]">
         <BasePopover.Popup
+          initialFocus={initialFocus}
           className={cn(
             "z-[100] w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none",
             "origin-[var(--transform-origin)] transition-[transform,scale,opacity]",

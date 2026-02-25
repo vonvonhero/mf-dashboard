@@ -1,7 +1,7 @@
 "use client";
 
-import type { Route } from "next";
 import { TrendingUp } from "lucide-react";
+import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import {
   ComposedChart,

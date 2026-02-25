@@ -1,6 +1,5 @@
 "use client";
 
-import type { Route } from "next";
 import {
   LayoutDashboard,
   TrendingUp,
@@ -10,6 +9,7 @@ import {
   Lightbulb,
   X,
 } from "lucide-react";
+import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {

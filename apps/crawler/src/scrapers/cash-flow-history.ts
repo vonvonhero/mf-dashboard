@@ -1,9 +1,9 @@
 import type { CashFlowSummary, CashFlowItem } from "@mf-dashboard/db/types";
-import type { Locator, Page } from "playwright";
 import { mfUrls } from "@mf-dashboard/meta/urls";
-import type { CashFlowHistoryResult } from "../types.js";
+import type { Locator, Page } from "playwright";
 import { log, debug } from "../logger.js";
 import { parseJapaneseNumber, convertDateToIso } from "../parsers.js";
+import type { CashFlowHistoryResult } from "../types.js";
 
 // Column indices for #cf-detail-table
 // 計算対象 | 日付 | 内容 | 金額 | 保有金融機関 | 大項目 | 中項目 | メモ | 振替 | 削除

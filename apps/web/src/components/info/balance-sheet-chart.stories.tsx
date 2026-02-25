@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { getAssetBreakdownByCategory, getLiabilityBreakdownByCategory } from "@mf-dashboard/db";
 import { getLatestMonthlySummary } from "@mf-dashboard/db";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { mocked } from "storybook/test";
 import { BalanceSheetChart } from "./balance-sheet-chart";
 

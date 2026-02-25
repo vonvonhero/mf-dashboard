@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
 import { isDatabaseAvailable } from "@mf-dashboard/db";
-import "./globals.css";
 import { DatabaseZap } from "lucide-react";
+import "./globals.css";
+import type { Metadata } from "next";
 import { AccountNotifications } from "../components/info/account-notifications";
 import { GroupSelector } from "../components/layout/group-selector";
 import { Header } from "../components/layout/header";

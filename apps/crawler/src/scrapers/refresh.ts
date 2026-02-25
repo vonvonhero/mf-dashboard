@@ -1,6 +1,6 @@
 import type { RefreshResult } from "@mf-dashboard/db/types";
-import type { Page } from "playwright";
 import { mfUrls } from "@mf-dashboard/meta/urls";
+import type { Page } from "playwright";
 import { debug, info, warn } from "../logger.js";
 
 const DEFAULT_MAX_WAIT_MINUTES = 20;

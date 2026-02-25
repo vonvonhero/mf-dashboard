@@ -1,8 +1,8 @@
-import type { Page } from "playwright";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
-import type { Hook } from "./types.js";
+import type { Page } from "playwright";
 import { log, info, error } from "../logger.js";
+import type { Hook } from "./types.js";
 
 const HOOKS_DIR = join(import.meta.dirname, "../../hooks");
 

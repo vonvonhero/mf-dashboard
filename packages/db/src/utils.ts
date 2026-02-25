@@ -1,5 +1,5 @@
-import type { SQLiteColumn, SQLiteTable } from "drizzle-orm/sqlite-core";
 import { eq, type SQL } from "drizzle-orm";
+import type { SQLiteColumn, SQLiteTable } from "drizzle-orm/sqlite-core";
 import type { Db } from "./index";
 
 /** 現在時刻を ISO 8601 文字列で返す */

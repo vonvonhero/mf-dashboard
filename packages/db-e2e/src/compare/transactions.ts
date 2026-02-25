@@ -1,5 +1,5 @@
-import type { CashFlowSummary } from "@mf-dashboard/db/types";
 import { getTransactionsByMonth, getMonthlySummaryByMonth, type Db } from "@mf-dashboard/db";
+import type { CashFlowSummary } from "@mf-dashboard/db/types";
 
 export type TransactionComparison = {
   month: string;

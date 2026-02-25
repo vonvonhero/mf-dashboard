@@ -1,8 +1,8 @@
-import type { Browser, BrowserContext, Page } from "playwright";
-import { initDb } from "@mf-dashboard/db";
-import { mfUrls } from "@mf-dashboard/meta/urls";
 import { existsSync, unlinkSync } from "node:fs";
 import path from "node:path";
+import { initDb } from "@mf-dashboard/db";
+import { mfUrls } from "@mf-dashboard/meta/urls";
+import type { Browser, BrowserContext, Page } from "playwright";
 import { chromium } from "playwright";
 import { createBrowserContext } from "../../src/browser/context.js";
 import { SCREENSHOT_DIR, ensureScreenshotDir } from "./global-setup.js";

@@ -1,8 +1,8 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { Menu } from "lucide-react";
 import Image from "next/image";
+import type { ReactNode } from "react";
 import { IconButton } from "../ui/icon-button";
 import { ActionIcons } from "./action-icons";
 import { useSidebar } from "./sidebar-context";

@@ -1,6 +1,6 @@
 import type { AssetSummary } from "@mf-dashboard/db/types";
-import type { Page } from "playwright";
 import { mfUrls } from "@mf-dashboard/meta/urls";
+import type { Page } from "playwright";
 import { debug } from "../logger.js";
 
 export async function getAssetSummary(page: Page): Promise<AssetSummary> {

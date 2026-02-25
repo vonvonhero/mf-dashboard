@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import type { SensitivityRow } from "./simulate-monte-carlo";
 import { SecurityScore } from "./security-score";
+import type { SensitivityRow } from "./simulate-monte-carlo";
 
 const baseSensitivity: SensitivityRow[] = [
   {

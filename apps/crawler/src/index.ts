@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { analyzeFinancialData } from "@mf-dashboard/analytics";
 import { initDb, closeDb } from "@mf-dashboard/db";
 import { updateAccountCategory, buildAccountIdMap } from "@mf-dashboard/db/repository/accounts";
@@ -6,8 +8,6 @@ import {
   hasTransactionsForMonth,
   saveTransactionsForMonth,
 } from "@mf-dashboard/db/repository/transactions";
-import { existsSync } from "node:fs";
-import path from "node:path";
 import { chromium } from "playwright";
 import { loginWithAuthState } from "./auth/login.js";
 import { hasAuthState } from "./auth/state.js";

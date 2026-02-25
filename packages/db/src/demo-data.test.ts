@@ -1,8 +1,8 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { createClient, type Client } from "@libsql/client";
 import { eq, and, isNotNull, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/libsql";
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 /**
  * デモデータ整合性テスト
  *

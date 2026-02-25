@@ -2,7 +2,6 @@
 
 import { ChevronDown, List, TrendingDown, TrendingUp, type LucideIcon } from "lucide-react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import type { CategoryData, SubCategoryData } from "./types";
 import { getChartColorArray } from "../../../lib/colors";
 import { formatCurrency, formatDateShort } from "../../../lib/format";
 import { cn } from "../../../lib/utils";
@@ -10,6 +9,7 @@ import { chartTooltipStyle } from "../../charts/chart-tooltip";
 import { AmountDisplay, getAmountColorClass } from "../../ui/amount-display";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { CategoryAccordion } from "./category-accordion";
+import type { CategoryData, SubCategoryData } from "./types";
 import { useCategoryExpansion } from "./use-category-expansion";
 
 interface CategoryBreakdownClientProps {

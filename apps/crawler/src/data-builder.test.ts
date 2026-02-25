@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
-import type { GlobalData, GroupData } from "./scraper.js";
 import { buildScrapedData, buildGroupOnlyScrapedData } from "./data-builder.js";
+import type { GlobalData, GroupData } from "./scraper.js";
 
 // テスト用のモックデータ
 const mockGlobalData: GlobalData = {

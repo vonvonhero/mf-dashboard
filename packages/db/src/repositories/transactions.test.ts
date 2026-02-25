@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeAll, beforeEach, afterAll } from "vitest";
-import type { CashFlowItem } from "../types";
 import * as schema from "../schema/schema";
 import { createTestDb, resetTestDb, closeTestDb } from "../test-helpers";
+import type { CashFlowItem } from "../types";
 import {
   saveTransaction,
   hasTransactionsForMonth,

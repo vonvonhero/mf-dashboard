@@ -9,11 +9,11 @@
  *   DB_PATH=../../data/demo.db npx tsx src/seed.ts
  */
 
+import { unlinkSync, existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 import { migrate } from "drizzle-orm/libsql/migrator";
-import { unlinkSync, existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
 import * as schema from "./schema/schema";
 
 // ---------------------------------------------------------------------------

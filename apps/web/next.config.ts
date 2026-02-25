@@ -1,7 +1,7 @@
-import type { NextConfig } from "next";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { loadEnvFile } from "node:process";
+import type { NextConfig } from "next";
 
 const rootEnvPath = join(import.meta.dirname, "../../.env");
 

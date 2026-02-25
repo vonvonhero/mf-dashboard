@@ -1,8 +1,8 @@
 "use client";
 
-import type { Route } from "next";
 import { Select as BaseSelect } from "@base-ui/react/select";
 import { Check, ChevronDown } from "lucide-react";
+import type { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { buildGroupPath, extractGroupIdFromPath, extractPagePath } from "../../lib/url";

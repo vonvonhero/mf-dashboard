@@ -1,7 +1,7 @@
 import { eq, and, notInArray, sql } from "drizzle-orm";
 import type { Db } from "../index";
-import type { AssetHistoryPoint } from "../types";
 import { schema } from "../index";
+import type { AssetHistoryPoint } from "../types";
 import { now, convertToIsoDate, upsertById } from "../utils";
 
 // ============================================================================

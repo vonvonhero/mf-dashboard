@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import type { Route } from "next";
-import type { HTMLAttributes, Ref } from "react";
 import Link from "next/link";
+import type { HTMLAttributes, Ref } from "react";
 import { cn } from "../../lib/utils";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {

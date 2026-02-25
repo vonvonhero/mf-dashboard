@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import type { SortColumn, Transaction, TransactionKpi } from "./types";
 import { countBy, filterTransactions, sortTransactions } from "../../../lib/transaction-utils";
+import type { SortColumn, Transaction, TransactionKpi } from "./types";
 
 interface UseTransactionFilteringOptions {
   transactions: Transaction[];

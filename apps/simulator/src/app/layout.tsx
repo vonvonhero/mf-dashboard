@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import type { Metadata } from "next";
 import "./globals.css";
 
 const title = "資産切り崩しシミュレーター";

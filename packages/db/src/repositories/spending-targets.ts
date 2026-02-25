@@ -1,7 +1,7 @@
 import { eq, and } from "drizzle-orm";
 import type { Db } from "../index";
-import type { SpendingTargetsData } from "../types";
 import { schema } from "../index";
+import type { SpendingTargetsData } from "../types";
 import { upsertById } from "../utils";
 
 export async function saveSpendingTargets(

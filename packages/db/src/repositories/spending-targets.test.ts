@@ -1,5 +1,4 @@
 import { describe, test, expect, beforeAll, beforeEach, afterAll } from "vitest";
-import type { SpendingTargetsData } from "../types";
 import * as schema from "../schema/schema";
 import {
   createTestDb,
@@ -8,6 +7,7 @@ import {
   createTestGroup,
   TEST_GROUP_ID,
 } from "../test-helpers";
+import type { SpendingTargetsData } from "../types";
 import { saveSpendingTargets, getSpendingTargets } from "./spending-targets";
 
 type Db = Awaited<ReturnType<typeof createTestDb>>;

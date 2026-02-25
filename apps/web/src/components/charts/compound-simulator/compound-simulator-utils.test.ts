@@ -1,6 +1,5 @@
 import { describe, expect, test } from "vitest";
 import type { YearlyProjection } from "./calculate-compound";
-import type { MonteCarloYearData } from "./simulate-monte-carlo";
 import {
   getLabelMap,
   selectMilestones,
@@ -16,6 +15,7 @@ import {
   getSecurityLabel,
   MILESTONE_CANDIDATES,
 } from "./compound-simulator-utils";
+import type { MonteCarloYearData } from "./simulate-monte-carlo";
 
 describe("getLabelMap", () => {
   test("returns tax-free labels when taxFree is true", () => {

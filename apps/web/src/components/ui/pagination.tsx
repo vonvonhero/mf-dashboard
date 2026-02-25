@@ -1,7 +1,7 @@
 "use client";
 
-import type { RefObject } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { RefObject } from "react";
 import { Button } from "./button";
 
 interface PaginationProps {

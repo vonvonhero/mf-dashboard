@@ -1,4 +1,9 @@
 import { describe, it, expect } from "vitest";
+import { analyzeIncomeStability } from "./analyze-income-stability";
+import { analyzeMoMTrend } from "./analyze-mom-trend";
+import { analyzePortfolioRisk } from "./analyze-portfolio-risk";
+import { analyzeSavingsTrajectory } from "./analyze-savings-trajectory";
+import { analyzeSpendingComparison } from "./analyze-spending-comparison";
 import type {
   MonthlySummary,
   CategoryTotal,
@@ -6,11 +11,6 @@ import type {
   DailyChangeInfo,
   SavingsInput,
 } from "./analyzer-types";
-import { analyzeIncomeStability } from "./analyze-income-stability";
-import { analyzeMoMTrend } from "./analyze-mom-trend";
-import { analyzePortfolioRisk } from "./analyze-portfolio-risk";
-import { analyzeSavingsTrajectory } from "./analyze-savings-trajectory";
-import { analyzeSpendingComparison } from "./analyze-spending-comparison";
 
 describe("analyzeMoMTrend", () => {
   it("should return empty result for empty input", () => {

@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
 import {
   getAvailableMonths,
   getMonthlySummaryByMonth,
   isDatabaseAvailable,
 } from "@mf-dashboard/db";
 import { mfUrls } from "@mf-dashboard/meta/urls";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CategoryBreakdown } from "../../../components/info/category-breakdown/category-breakdown";
 import { DailySpendingHeatmap } from "../../../components/info/daily-spending-heatmap";

@@ -1,5 +1,5 @@
-import type { ComponentPropsWithoutRef, ElementRef, Ref } from "react";
 import { Command as CommandPrimitive } from "cmdk";
+import type { ComponentPropsWithoutRef, ElementRef, Ref } from "react";
 import { cn } from "../../lib/utils";
 
 interface CommandProps extends ComponentPropsWithoutRef<typeof CommandPrimitive> {

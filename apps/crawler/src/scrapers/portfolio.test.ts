@@ -1,5 +1,11 @@
 import { describe, test, expect } from "vitest";
-import { identifyTableTypeFromTitle, parseFxQuantity, parseFxRate } from "./portfolio.js";
+import {
+  identifyTableTypeFromTitle,
+  parseFxQuantity,
+  parseFxRate,
+  parsePointQuantity,
+  parsePointRate,
+} from "./portfolio.js";
 
 describe("identifyTableTypeFromTitle", () => {
   test("「ポイント・マイル」はそのまま返す", () => {
@@ -56,5 +62,25 @@ describe("parseFxRate", () => {
   test("レートがない場合は undefined", () => {
     expect(parseFxRate("")).toBeUndefined();
     expect(parseFxRate("日時のみ")).toBeUndefined();
+  });
+});
+
+describe("parsePointQuantity", () => {
+  test("ポイント数から数値を抽出", () => {
+    expect(parsePointQuantity("98,569ポイント")).toBe(98569);
+  });
+
+  test("値がない場合は undefined", () => {
+    expect(parsePointQuantity("")).toBeUndefined();
+  });
+});
+
+describe("parsePointRate", () => {
+  test("換算レートを数値で返す", () => {
+    expect(parsePointRate("0.30")).toBe(0.3);
+  });
+
+  test("値がない場合は undefined", () => {
+    expect(parsePointRate("")).toBeUndefined();
   });
 });

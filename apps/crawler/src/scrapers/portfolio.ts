@@ -46,7 +46,13 @@ const INSURANCE_PENSION_COLUMNS = {
   UNREALIZED_GAIN: 3,
   UNREALIZED_GAIN_PCT: 4,
 } as const;
-const POINT_COLUMNS = { NAME: 0, BALANCE: 4, INSTITUTION: 6 } as const;
+const POINT_COLUMNS = {
+  NAME: 0,
+  QUANTITY: 2,
+  UNIT_PRICE: 3,
+  BALANCE: 4,
+  INSTITUTION: 6,
+} as const;
 const FX_BALANCE_COLUMNS = { INSTITUTION: 0, NAME: 1, BALANCE: 2 } as const;
 const FX_POSITION_COLUMNS = {
   PAIR: 0,
@@ -180,6 +186,18 @@ export function parseFxRate(rateText: string): number | undefined {
   const match = rateText.match(/-?\d[\d,]*(?:\.\d+)?/);
   if (!match) return undefined;
   const rate = parseDecimalNumber(match[0]);
+  return rate || undefined;
+}
+
+export function parsePointQuantity(quantityText: string): number | undefined {
+  if (!quantityText) return undefined;
+  const quantity = parseDecimalNumber(quantityText);
+  return quantity || undefined;
+}
+
+export function parsePointRate(rateText: string): number | undefined {
+  if (!rateText) return undefined;
+  const rate = parseDecimalNumber(rateText);
   return rate || undefined;
 }
 
@@ -339,10 +357,12 @@ async function parseInsuranceAndPoints(page: Page): Promise<PortfolioItem[]> {
 
       if (category === POINT) {
         // 並列取得（ポイント）
-        const [name, institution, balanceText] = await Promise.all([
+        const [name, institution, balanceText, quantityText, unitPriceText] = await Promise.all([
           getCellText(cells, 0),
           getCellText(cells, POINT_COLUMNS.INSTITUTION),
           getCellText(cells, POINT_COLUMNS.BALANCE, "0"),
+          getCellText(cells, POINT_COLUMNS.QUANTITY),
+          getCellText(cells, POINT_COLUMNS.UNIT_PRICE),
         ]);
         if (!name) continue;
 
@@ -351,6 +371,8 @@ async function parseInsuranceAndPoints(page: Page): Promise<PortfolioItem[]> {
           type: category,
           institution,
           balance: parseJapaneseNumber(balanceText),
+          quantity: parsePointQuantity(quantityText),
+          unitPrice: parsePointRate(unitPriceText),
         });
       } else {
         // 並列取得（保険・年金）

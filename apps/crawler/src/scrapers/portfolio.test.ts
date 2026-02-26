@@ -1,6 +1,7 @@
 import { describe, test, expect } from "vitest";
 import {
   identifyTableTypeFromTitle,
+  parseAccountHashFromHref,
   parseFxQuantity,
   parseFxRate,
   parsePointQuantity,
@@ -82,5 +83,21 @@ describe("parsePointRate", () => {
 
   test("値がない場合は undefined", () => {
     expect(parsePointRate("")).toBeUndefined();
+  });
+});
+
+describe("parseAccountHashFromHref", () => {
+  test("hrefのクエリからsub_account_id_hashを抽出", () => {
+    const href =
+      "https://moneyforward.com/bs/portfolio/abc123?sub_account_id_hash=qK8r2pYUusq2UTPoJYPqTbJgjWaTxT5nBZ36rsocP38";
+    expect(parseAccountHashFromHref(href)).toBe("qK8r2pYUusq2UTPoJYPqTbJgjWaTxT5nBZ36rsocP38");
+  });
+
+  test("sub_account_id_hashが無い場合はundefined", () => {
+    expect(parseAccountHashFromHref("https://moneyforward.com/bs/portfolio/abc123")).toBeUndefined();
+  });
+
+  test("sub_account_id_hash=0はundefined", () => {
+    expect(parseAccountHashFromHref("https://moneyforward.com/bs/portfolio/abc123?sub_account_id_hash=0")).toBeUndefined();
   });
 });

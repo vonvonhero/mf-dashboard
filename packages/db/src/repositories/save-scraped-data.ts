@@ -53,6 +53,28 @@ export async function saveScrapedData(db: Db, data: ScrapedData): Promise<void> 
   const accountIdMap = await buildAccountIdMap(db);
   log(`  - accountIdMap: ${accountIdMap.size} entries`);
 
+  // Portfolio/liability保存時は mfId 優先で解決し、同名複数口座の曖昧解決を避ける
+  const accountRows = await db
+    .select({ id: schema.accounts.id, mfId: schema.accounts.mfId, name: schema.accounts.name })
+    .from(schema.accounts)
+    .all();
+  const statusRows = await db
+    .select({ accountId: schema.accountStatuses.accountId, totalAssets: schema.accountStatuses.totalAssets })
+    .from(schema.accountStatuses)
+    .all();
+  const accountIdByMfId = new Map(accountRows.map((account) => [account.mfId, account.id]));
+  const totalAssetsByAccountId = new Map(
+    statusRows.map((status) => [status.accountId, status.totalAssets ?? 0]),
+  );
+  const accountIdsByName = new Map<string, number[]>();
+  const normalizeAccountName = (value: string): string => value.trim().replace(/\s+/g, " ");
+  for (const account of accountRows) {
+    const key = normalizeAccountName(account.name);
+    const ids = accountIdsByName.get(key) ?? [];
+    ids.push(account.id);
+    accountIdsByName.set(key, ids);
+  }
+
   // 4. Group-account links (バルク処理)
   await clearGroupAccountLinks(db, groupId);
   const accountIds = data.registeredAccounts.accounts
@@ -101,10 +123,58 @@ export async function saveScrapedData(db: Db, data: ScrapedData): Promise<void> 
       .get();
   }
   const unknownAccountId = unknownAccount.id;
+  const pickBestFromCandidates = (candidateIds: number[], amount?: number): number => {
+    if (candidateIds.length === 1) return candidateIds[0];
+
+    if (amount !== undefined) {
+      const roundedAmount = Math.round(Math.abs(amount));
+      const exactMatch = candidateIds.find(
+        (accountId) => (totalAssetsByAccountId.get(accountId) ?? 0) === roundedAmount,
+      );
+      if (exactMatch) return exactMatch;
+    }
+
+    return candidateIds
+      .slice()
+      .sort((a, b) => (totalAssetsByAccountId.get(b) ?? 0) - (totalAssetsByAccountId.get(a) ?? 0))[0];
+  };
+
+  const resolveAccountId = (item: {
+    mfId?: string;
+    institution?: string;
+    name?: string;
+    type?: string;
+    balance?: number;
+  }): number => {
+    if (item.mfId) {
+      const accountId = accountIdByMfId.get(item.mfId);
+      if (accountId) return accountId;
+    }
+
+    const institution = item.institution?.trim();
+    if (institution) {
+      const ids = accountIdsByName.get(normalizeAccountName(institution));
+      if (ids && ids.length > 0) {
+        return pickBestFromCandidates(ids, item.balance);
+      }
+    }
+
+    // 年金テーブルは金融機関名が空の行があるため、名称からDC口座を推定
+    if (item.type === "年金" && item.name && /(DC|確定拠出年金)/.test(item.name)) {
+      const dcIds = accountRows
+        .filter((account) => /(DC|確定拠出年金)/.test(account.name))
+        .map((account) => account.id);
+      if (dcIds.length > 0) {
+        return pickBestFromCandidates(dcIds, item.balance);
+      }
+    }
+
+    return unknownAccountId;
+  };
 
   // 8. Save portfolio
   for (const item of data.portfolio.items) {
-    const accountId = accountIdMap.get(item.institution) || unknownAccountId;
+    const accountId = resolveAccountId(item);
     const categoryId = await getOrCreateCategory(db, item.type);
     const holdingId = await createHolding(db, accountId, item.name, "asset", {
       categoryId,
@@ -125,7 +195,7 @@ export async function saveScrapedData(db: Db, data: ScrapedData): Promise<void> 
 
   // 9. Save liabilities
   for (const liability of data.liabilities.items) {
-    const accountId = accountIdMap.get(liability.institution) || unknownAccountId;
+    const accountId = resolveAccountId(liability);
     const holdingId = await createHolding(db, accountId, liability.name, "liability", {
       liabilityCategory: liability.category,
     });

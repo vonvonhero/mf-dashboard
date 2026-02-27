@@ -159,8 +159,9 @@ export async function saveScrapedData(db: Db, data: ScrapedData): Promise<void> 
       }
     }
 
-    // 年金テーブルは金融機関名が空の行があるため、名称からDC口座を推定
-    if (item.type === "年金" && item.name && /(DC|確定拠出年金)/.test(item.name)) {
+    // 年金テーブルの自動取得行はmfId・金融機関名を持たないため、DC口座と見なす
+    // 名称に依存しない判定で「待機資金」のような汎用名称にも対応
+    if (item.type === "年金" && !item.mfId && !item.institution) {
       const dcIds = accountRows
         .filter((account) => /(DC|確定拠出年金)/.test(account.name))
         .map((account) => account.id);

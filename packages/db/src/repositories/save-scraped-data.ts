@@ -30,7 +30,7 @@ function log(...args: unknown[]) {
  * - group_accountsへのリンク
  */
 export async function saveScrapedData(db: Db, data: ScrapedData): Promise<void> {
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Tokyo" }).format(new Date());
 
   log("Saving scraped data to database...");
 

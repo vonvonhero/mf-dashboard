@@ -205,14 +205,19 @@ export async function saveScrapedData(db: Db, data: ScrapedData): Promise<void> 
   log(`  - Liabilities: ${data.liabilities.items.length}`);
 
   // 10. Save transactions
-  let savedCount = 0;
+  let insertedCount = 0;
+  let updatedCount = 0;
+  let skippedCount = 0;
   for (const item of data.cashFlow.items) {
-    await saveTransaction(db, item, accountIdMap);
-    if (item.mfId && !item.mfId.startsWith("unknown")) {
-      savedCount++;
-    }
+    const result = await saveTransaction(db, item, accountIdMap);
+    if (result === "inserted") insertedCount++;
+    if (result === "updated") updatedCount++;
+    if (result === "skipped") skippedCount++;
   }
-  log(`  - Transactions: ${savedCount}/${data.cashFlow.items.length}`);
+  const savedCount = insertedCount + updatedCount;
+  log(
+    `  - Transactions: ${savedCount}/${data.cashFlow.items.length} (inserted: ${insertedCount}, updated: ${updatedCount}, skipped: ${skippedCount})`,
+  );
 
   // 11. Save asset history
   if (data.assetHistory?.points?.length > 0) {

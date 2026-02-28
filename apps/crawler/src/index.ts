@@ -91,8 +91,17 @@ async function main() {
     if (noGroupData) {
       section(`Save: ${noGroupData.group.name} (Full)`);
       const scrapedData = buildScrapedData(globalData, noGroupData);
+      const validTransactionCount = scrapedData.cashFlow.items.filter(
+        (item) => item.mfId && !item.mfId.startsWith("unknown"),
+      ).length;
+      log(
+        `Transactions (${scrapedData.cashFlow.month || "unknown-month"}): ${validTransactionCount}/${scrapedData.cashFlow.items.length}`,
+      );
       debug("Scraped data:", JSON.stringify(scrapedData, null, 2));
       await saveScrapedData(db, scrapedData);
+      log(
+        `Transactions (${scrapedData.cashFlow.month || "unknown-month"}): saved ${validTransactionCount}`,
+      );
     }
 
     // 各グループはグループ固有データのみ保存（リンク + assetHistory + spendingTargets）

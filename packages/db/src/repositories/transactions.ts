@@ -2,18 +2,20 @@ import { eq, like, sql } from "drizzle-orm";
 import type { Db } from "../index";
 import { schema } from "../index";
 import type { CashFlowItem } from "../types";
-import { convertToIsoDate, now, upsertById } from "../utils";
+import { convertToIsoDate, now } from "../utils";
 
 const BATCH_SIZE = 500;
+
+export type TransactionSaveResult = "inserted" | "updated" | "skipped";
 
 export async function saveTransaction(
   db: Db,
   item: CashFlowItem,
   accountIdMap?: Map<string, number>,
-): Promise<void> {
+): Promise<TransactionSaveResult> {
   // Skip items without valid mfId
   if (!item.mfId || item.mfId.startsWith("unknown")) {
-    return;
+    return "skipped";
   }
 
   // 日付をISO形式に変換
@@ -64,7 +66,34 @@ export async function saveTransaction(
     transferTargetAccountId,
   };
 
-  await upsertById(db, schema.transactions, eq(schema.transactions.mfId, item.mfId), data, data);
+  const existing = await db
+    .select({ id: schema.transactions.id })
+    .from(schema.transactions)
+    .where(eq(schema.transactions.mfId, item.mfId))
+    .get();
+
+  if (existing) {
+    await db
+      .update(schema.transactions)
+      .set({
+        ...data,
+        updatedAt: now(),
+      })
+      .where(eq(schema.transactions.mfId, item.mfId))
+      .run();
+    return "updated";
+  }
+
+  await db
+    .insert(schema.transactions)
+    .values({
+      ...data,
+      createdAt: now(),
+      updatedAt: now(),
+    })
+    .run();
+
+  return "inserted";
 }
 
 /**

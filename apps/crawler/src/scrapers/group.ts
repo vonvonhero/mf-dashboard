@@ -193,6 +193,9 @@ export async function switchGroup(page: Page, groupId: string): Promise<Group | 
 
 /**
  * グループスコープを作成（`await using` 用）
+ *
+ * スコープ終了時に元のグループに復元する。
+ * 復元に失敗した場合はリトライを行い、それでも失敗した場合はエラーログを出力する。
  */
 export async function createGroupScope(
   page: Page,
@@ -202,12 +205,32 @@ export async function createGroupScope(
   return {
     originalGroup,
     [Symbol.asyncDispose]: async () => {
-      if (originalGroup) {
+      if (!originalGroup) return;
+
+      const MAX_RETRIES = 2;
+      for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
         try {
-          log(`Restoring original group: ${originalGroup.name}`);
+          log(
+            `Restoring original group: ${originalGroup.name}${attempt > 0 ? ` (retry ${attempt})` : ""}`,
+          );
           await switchGroup(page, originalGroup.id);
+          log(`Successfully restored group: ${originalGroup.name}`);
+          return;
         } catch (err) {
-          warn("Failed to restore original group:", err);
+          if (attempt < MAX_RETRIES) {
+            warn(`Failed to restore group (attempt ${attempt + 1}/${MAX_RETRIES + 1}):`, err);
+            // ページ状態をリセットしてリトライ
+            try {
+              await page.goto(mfUrls.home, {
+                waitUntil: "domcontentloaded",
+                timeout: 10000,
+              });
+            } catch {
+              // ナビゲーション失敗は次のリトライで再試行
+            }
+          } else {
+            warn("Failed to restore original group after all retries:", err);
+          }
         }
       }
     },

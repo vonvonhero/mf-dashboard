@@ -70,24 +70,24 @@ afterAll(async () => {
 });
 
 describe("グループ保存（新フロー）", () => {
-  test("全グループが保存される", () => {
+  test("全グループが保存される", async () => {
     const db = getDb();
-    const groups = db.select().from(schema.groups).all();
+    const groups = await db.select().from(schema.groups).all();
     expect(groups.length).toBe(scrapeResult.groupDataList.length);
   });
 
-  test("正確に1つのグループがisCurrentである", () => {
+  test("正確に1つのグループがisCurrentである", async () => {
     const db = getDb();
-    const groups = db.select().from(schema.groups).all();
+    const groups = await db.select().from(schema.groups).all();
     const currentGroups = groups.filter((g) => g.isCurrent);
     expect(currentGroups).toHaveLength(1);
   });
 
-  test("isCurrentのグループはdefaultGroupと一致する", () => {
+  test("isCurrentのグループはdefaultGroupと一致する", async () => {
     if (!scrapeResult.defaultGroup) return;
 
     const db = getDb();
-    const currentGroup = db
+    const currentGroup = await db
       .select()
       .from(schema.groups)
       .where(eq(schema.groups.isCurrent, true))
@@ -98,33 +98,33 @@ describe("グループ保存（新フロー）", () => {
 });
 
 describe("グループ-アカウント紐付け", () => {
-  test("各グループにアカウントが紐付けられる", () => {
+  test("各グループにアカウントが紐付けられる", async () => {
     const db = getDb();
-    const groupAccounts = db.select().from(schema.groupAccounts).all();
+    const groupAccounts = await db.select().from(schema.groupAccounts).all();
     expect(groupAccounts.length).toBeGreaterThan(0);
   });
 
-  test("「グループ選択なし」に全アカウントが紐付けられる", () => {
+  test("「グループ選択なし」に全アカウントが紐付けられる", async () => {
     const db = getDb();
     const noGroupId = "0";
-    const noGroupAccounts = db
+    const noGroupAccounts = await db
       .select()
       .from(schema.groupAccounts)
       .where(eq(schema.groupAccounts.groupId, noGroupId))
       .all();
 
-    const allAccounts = db.select().from(schema.accounts).all();
+    const allAccounts = await db.select().from(schema.accounts).all();
     // unknownアカウントを除外した数と比較
     const realAccounts = allAccounts.filter((a) => a.mfId !== "unknown");
     expect(noGroupAccounts.length).toBe(realAccounts.length);
   });
 
-  test("各グループのアカウント数が正しい", () => {
+  test("各グループのアカウント数が正しい", async () => {
     const db = getDb();
 
     for (const groupData of scrapeResult.groupDataList) {
       const groupId = groupData.group.id;
-      const dbLinks = db
+      const dbLinks = await db
         .select()
         .from(schema.groupAccounts)
         .where(eq(schema.groupAccounts.groupId, groupId))
@@ -135,11 +135,11 @@ describe("グループ-アカウント紐付け", () => {
     }
   });
 
-  test("同じアカウントが複数グループに紐付けできる", () => {
+  test("同じアカウントが複数グループに紐付けできる", async () => {
     const db = getDb();
 
     // アカウントIDごとにグループ数をカウント
-    const groupAccounts = db.select().from(schema.groupAccounts).all();
+    const groupAccounts = await db.select().from(schema.groupAccounts).all();
     const accountGroupCount = new Map<number, number>();
 
     for (const ga of groupAccounts) {
@@ -154,12 +154,12 @@ describe("グループ-アカウント紐付け", () => {
 });
 
 describe("資産履歴（グループ別）", () => {
-  test("各グループに資産履歴が保存される", () => {
+  test("各グループに資産履歴が保存される", async () => {
     const db = getDb();
 
     for (const groupData of scrapeResult.groupDataList) {
       const groupId = groupData.group.id;
-      const history = db
+      const history = await db
         .select()
         .from(schema.assetHistory)
         .where(eq(schema.assetHistory.groupId, groupId))
@@ -174,14 +174,14 @@ describe("資産履歴（グループ別）", () => {
 });
 
 describe("予算データ（グループ別）", () => {
-  test("予算データがあるグループには保存される", () => {
+  test("予算データがあるグループには保存される", async () => {
     const db = getDb();
 
     for (const groupData of scrapeResult.groupDataList) {
       if (!groupData.spendingTargets) continue;
 
       const groupId = groupData.group.id;
-      const targets = db
+      const targets = await db
         .select()
         .from(schema.spendingTargets)
         .where(eq(schema.spendingTargets.groupId, groupId))

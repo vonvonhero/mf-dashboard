@@ -46,47 +46,47 @@ afterAll(async () => {
 });
 
 describe("DB保存", () => {
-  test("グループが保存される", () => {
+  test("グループが保存される", async () => {
     const db = getDb();
-    const groups = db.select().from(schema.groups).all();
+    const groups = await db.select().from(schema.groups).all();
     expect(groups.length).toBeGreaterThan(0);
     expect(groups.some((g) => g.isCurrent)).toBe(true);
   });
 
-  test("口座が保存される", () => {
+  test("口座が保存される", async () => {
     const db = getDb();
-    const accounts = db.select().from(schema.accounts).all();
+    const accounts = await db.select().from(schema.accounts).all();
     expect(accounts.length).toBeGreaterThan(0);
   });
 
-  test("資産カテゴリが保存される", () => {
+  test("資産カテゴリが保存される", async () => {
     const db = getDb();
-    const categories = db.select().from(schema.assetCategories).all();
+    const categories = await db.select().from(schema.assetCategories).all();
     expect(categories.length).toBeGreaterThan(0);
   });
 
-  test("日次スナップショットが保存される", () => {
+  test("日次スナップショットが保存される", async () => {
     const db = getDb();
-    const snapshots = db.select().from(schema.dailySnapshots).all();
+    const snapshots = await db.select().from(schema.dailySnapshots).all();
     expect(snapshots.length).toBeGreaterThan(0);
     const latestSnapshot = snapshots[snapshots.length - 1];
     const today = new Date().toISOString().split("T")[0];
     expect(latestSnapshot.date).toBe(today);
   });
 
-  test("保有銘柄が保存される", () => {
+  test("保有銘柄が保存される", async () => {
     const db = getDb();
-    const holdings = db.select().from(schema.holdings).all();
+    const holdings = await db.select().from(schema.holdings).all();
     expect(holdings.length).toBeGreaterThan(0);
     const assetHoldings = holdings.filter((h) => h.type === "asset");
     expect(assetHoldings.length).toBeGreaterThan(0);
   });
 
-  test("評価額が保存される", () => {
+  test("評価額が保存される", async () => {
     const db = getDb();
-    const snapshots = db.select().from(schema.dailySnapshots).all();
+    const snapshots = await db.select().from(schema.dailySnapshots).all();
     const latestSnapshot = snapshots[snapshots.length - 1];
-    const holdingValues = db
+    const holdingValues = await db
       .select()
       .from(schema.holdingValues)
       .where(eq(schema.holdingValues.snapshotId, latestSnapshot.id))
@@ -94,12 +94,12 @@ describe("DB保存", () => {
     expect(holdingValues.length).toBeGreaterThan(0);
   });
 
-  test("投資銘柄の詳細値が保存される", () => {
+  test("投資銘柄の詳細値が保存される", async () => {
     const db = getDb();
-    const snapshots = db.select().from(schema.dailySnapshots).all();
+    const snapshots = await db.select().from(schema.dailySnapshots).all();
     const latestSnapshot = snapshots[snapshots.length - 1];
     // 投資信託か株式のholding valuesを取得
-    const holdingValues = db
+    const holdingValues = await db
       .select()
       .from(schema.holdingValues)
       .innerJoin(schema.holdings, eq(schema.holdings.id, schema.holdingValues.holdingId))
@@ -125,17 +125,17 @@ describe("DB保存", () => {
     }
   });
 
-  test("口座ステータスが保存される", () => {
+  test("口座ステータスが保存される", async () => {
     const db = getDb();
-    const accountStatuses = db.select().from(schema.accountStatuses).all();
+    const accountStatuses = await db.select().from(schema.accountStatuses).all();
     expect(accountStatuses.length).toBeGreaterThan(0);
   });
 
   // Note: monthly_summary, yearly_summary, and monthly_category_totals are now calculated dynamically from transactions
 
-  test("トランザクションが保存される", () => {
+  test("トランザクションが保存される", async () => {
     const db = getDb();
-    const transactions = db.select().from(schema.transactions).all();
+    const transactions = await db.select().from(schema.transactions).all();
     expect(transactions.length).toBeGreaterThan(0);
     // mfId がユニーク
     const mfIds = transactions.map((t) => t.mfId);

@@ -22,12 +22,21 @@ const SELECTORS = {
   meSignIn: 'button:has-text("Sign in")',
 };
 
+const AUTHENTICATED_PATH_PREFIXES = ["/accounts", "/cf", "/bs", "/spending_targets"];
+
 function isLoggedInUrl(url: string): boolean {
-  return (
-    url.includes("moneyforward.com") &&
-    !url.includes("id.moneyforward.com") &&
-    !url.includes("/sign_in")
-  );
+  try {
+    const { hostname, pathname } = new URL(url);
+    if (hostname !== "moneyforward.com") {
+      return false;
+    }
+
+    return AUTHENTICATED_PATH_PREFIXES.some(
+      (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+    );
+  } catch {
+    return false;
+  }
 }
 
 function buildAccountSelector(username: string): string {
@@ -41,6 +50,16 @@ async function waitForUrlChange(page: Page, timeout: number = TIMEOUTS.redirect)
   } catch {
     // Ignore timeout: no redirect happened
   }
+}
+
+async function navigateToAuthenticatedPage(page: Page): Promise<string> {
+  await page.goto(mfUrls.accounts, {
+    waitUntil: "domcontentloaded",
+    timeout: TIMEOUTS.long,
+  });
+
+  await waitForUrlChange(page);
+  return page.url();
 }
 
 async function maybeHandleOtp(
@@ -80,19 +99,9 @@ async function isSessionValid(page: Page): Promise<boolean> {
   debug("Checking if session is valid...");
 
   try {
-    // Navigate to Money Forward home
-    await page.goto(mfUrls.home, {
-      waitUntil: "domcontentloaded",
-      timeout: TIMEOUTS.long,
-    });
-
-    // Wait a bit for potential redirects
-    await waitForUrlChange(page);
-
-    const currentUrl = page.url();
+    const currentUrl = await navigateToAuthenticatedPage(page);
     debug("Current URL after navigation:", currentUrl);
 
-    // If we're on the main site (not login/id page), session is valid
     if (isLoggedInUrl(currentUrl)) {
       log("Session is valid!");
       return true;
@@ -241,6 +250,11 @@ export async function login(page: Page): Promise<void> {
     await page.waitForURL(`${mfUrls.home}**`, { timeout: TIMEOUTS.login });
   } else {
     debug("Already redirected to ME (session exists)");
+  }
+
+  const verifiedUrl = await navigateToAuthenticatedPage(page);
+  if (!isLoggedInUrl(verifiedUrl)) {
+    throw new Error(`Login completed but did not reach an authenticated page: ${verifiedUrl}`);
   }
 
   log("Login successful!");

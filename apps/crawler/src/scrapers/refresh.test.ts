@@ -1,7 +1,50 @@
 import { chromium, type Browser, type Page } from "playwright";
-import { describe, test, expect, beforeAll, afterAll } from "vitest";
+import { describe, test, expect, beforeAll, afterAll, vi } from "vitest";
+import { clickRefreshButton } from "./refresh";
 
 describe("refresh - 更新中セレクタ", () => {
+  test("Modal Message iframe が出ていても閉じてから更新を押せる", async () => {
+    const clicks: string[] = [];
+    const refreshButton = {
+      click: vi.fn(async () => {
+        clicks.push("refresh");
+      }),
+    };
+    const closeButton = {
+      count: vi.fn(async () => 1),
+      click: vi.fn(async () => {
+        clicks.push("close");
+      }),
+    };
+    const iframeLocator = {
+      count: vi.fn(async () => 1),
+    };
+    const page = {
+      goto: vi.fn(async () => undefined),
+      waitForLoadState: vi.fn(async () => undefined),
+      waitForTimeout: vi.fn(async () => undefined),
+      locator: vi.fn((selector: string) => {
+        if (selector === 'a:has-text("更新")') return { first: () => refreshButton };
+        if (selector === 'iframe[title="Modal Message"]') return { first: () => iframeLocator };
+        if (selector === '#account-table td.account-status') return { count: async () => 0 };
+        throw new Error(`Unexpected locator: ${selector}`);
+      }),
+      frameLocator: vi.fn(() => ({
+        locator: vi.fn((selector: string) => ({
+          first: () => {
+            if (selector === 'button[aria-label="閉じる"]') return closeButton;
+            return { count: async () => 0, click: async () => undefined };
+          },
+        })),
+      })),
+    } as unknown as Page;
+
+    const result = await clickRefreshButton(page);
+
+    expect(clicks).toEqual(["close", "refresh"]);
+    expect(result).toEqual({ completed: true, incompleteAccounts: [] });
+  });
+
   let browser: Browser;
   let page: Page;
 

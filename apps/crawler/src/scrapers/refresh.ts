@@ -7,10 +7,31 @@ const DEFAULT_MAX_WAIT_MINUTES = 20;
 const MAX_WAIT_TIME_MS =
   (Number(process.env.MAX_WAIT_MINUTES) || DEFAULT_MAX_WAIT_MINUTES) * 60 * 1000; // default: 20 minutes
 const POLL_INTERVAL_MS = 30000; // 30 seconds
+const NAVIGATION_RETRY_DELAY_MS = 1000;
 
-async function navigateToAccountsPage(page: Page): Promise<void> {
-  await page.goto(mfUrls.accounts);
-  await page.waitForLoadState("networkidle");
+export async function navigateToAccountsPage(page: Page): Promise<void> {
+  const MAX_RETRIES = 1;
+
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      await page.goto(mfUrls.accounts, {
+        waitUntil: "domcontentloaded",
+      });
+      await page.waitForLoadState("networkidle");
+      return;
+    } catch (err) {
+      if (page.isClosed()) {
+        throw err;
+      }
+
+      const message = err instanceof Error ? err.message : String(err);
+      if (!message.includes("net::ERR_ABORTED") || attempt === MAX_RETRIES) {
+        throw err;
+      }
+
+      await page.waitForTimeout(NAVIGATION_RETRY_DELAY_MS);
+    }
+  }
 }
 
 async function getUpdatingAccounts(page: Page): Promise<string[]> {
@@ -84,12 +105,7 @@ export async function clickRefreshButton(page: Page): Promise<RefreshResult> {
     // Wait and navigate to accounts page again to get fresh status
     // Using goto instead of reload to avoid ERR_ABORTED when frame is detached
     await page.waitForTimeout(POLL_INTERVAL_MS);
-    try {
-      await navigateToAccountsPage(page);
-    } catch {
-      await page.waitForTimeout(1000);
-      await navigateToAccountsPage(page);
-    }
+    await navigateToAccountsPage(page);
   }
 
   // Timeout: get list of accounts still updating

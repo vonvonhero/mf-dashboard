@@ -1,6 +1,7 @@
 import { chromium, type Browser, type Page } from "playwright";
 import { describe, test, expect, beforeAll, afterAll, vi } from "vitest";
 import { clickRefreshButton } from "./refresh";
+import { navigateToAccountsPage } from "./refresh.js";
 
 describe("refresh - 更新中セレクタ", () => {
   test("Modal Message iframe が出ていても閉じてから更新を押せる", async () => {
@@ -363,5 +364,27 @@ describe("refresh - 更新中セレクタ", () => {
     }
 
     expect(updatingCount).toBe(1);
+  });
+
+  test("accountsページへの遷移がERR_ABORTEDでも1回だけ再試行する", async () => {
+    const goto = vi.fn().mockImplementationOnce(() => {
+      throw new Error("page.goto: net::ERR_ABORTED at https://moneyforward.com/accounts");
+    });
+    const waitForLoadState = vi.fn().mockResolvedValue(undefined);
+    const waitForTimeout = vi.fn().mockResolvedValue(undefined);
+    const isClosed = vi.fn().mockReturnValue(false);
+
+    const retryPage = {
+      goto,
+      waitForLoadState,
+      waitForTimeout,
+      isClosed,
+    } as unknown as Page;
+
+    await navigateToAccountsPage(retryPage);
+
+    expect(goto).toHaveBeenCalledTimes(2);
+    expect(waitForTimeout).toHaveBeenCalledWith(1000);
+    expect(waitForLoadState).toHaveBeenCalledTimes(1);
   });
 });

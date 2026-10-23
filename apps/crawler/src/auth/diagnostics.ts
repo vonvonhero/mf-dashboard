@@ -4,7 +4,7 @@ import { info, warn } from "../logger.js";
 
 // Persist only fixed labels and numeric metadata. Error messages, URLs, headers,
 // credentials and page contents can contain personal information.
-export const AUTH_PHASES = [
+const AUTH_PHASES = [
   "session_check",
   "credentials_fetch",
   "mfid_open",
@@ -26,7 +26,7 @@ export const AUTH_PHASES = [
   "session_verify",
   "auth_state_save",
 ] as const;
-export type AuthPhase = (typeof AUTH_PHASES)[number];
+type AuthPhase = (typeof AUTH_PHASES)[number];
 export type AuthCheckpoint = (phase: AuthPhase) => void;
 
 const NETWORK_CODES = [

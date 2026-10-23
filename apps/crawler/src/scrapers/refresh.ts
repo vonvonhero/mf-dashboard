@@ -1,10 +1,13 @@
+import { randomUUID } from "node:crypto";
 import type { RefreshResult } from "@mf-dashboard/db/types";
 import { mfUrls } from "@mf-dashboard/meta/urls";
 import type { Page } from "playwright";
+import { safeErrorDetails, writeCrawlerDiagnostic } from "../auth/diagnostics.js";
 import { debug, info, warn } from "../logger.js";
+import { withAccountsPageDiagnostics } from "./accounts-diagnostics.js";
 
 const DEFAULT_MAX_WAIT_MINUTES = 20;
-const POLL_INTERVAL_MS = 30000; // 30 seconds
+const POLL_INTERVAL_MS = 60000; // 60 seconds
 const NAVIGATION_RETRY_DELAY_MS = 1000;
 const NAVIGATION_TIMEOUT_MS = 60000;
 
@@ -14,7 +17,11 @@ interface NavigationOptions {
 
 function isRetryableNavigationError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
-  return message.includes("net::ERR_ABORTED") || message.includes("Timeout");
+  return (
+    message.includes("net::ERR_ABORTED") ||
+    message.includes("Timeout") ||
+    safeErrorDetails(error).failure_kind === "navigation_interrupted"
+  );
 }
 
 export async function navigateToAccountsPage(
@@ -23,23 +30,50 @@ export async function navigateToAccountsPage(
 ): Promise<void> {
   const MAX_RETRIES = 1;
   const retryDelayMs = options.retryDelayMs ?? NAVIGATION_RETRY_DELAY_MS;
+  const operationId = randomUUID();
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
-      await page.goto(mfUrls.accounts, {
-        waitUntil: "domcontentloaded",
-        timeout: NAVIGATION_TIMEOUT_MS,
-      });
+      await withAccountsPageDiagnostics(
+        page,
+        "refresh_navigation",
+        async (checkpoint, navigation) => {
+          await checkpoint("navigation");
+          navigation("started");
+          await page.goto(mfUrls.accounts, {
+            waitUntil: "domcontentloaded",
+            timeout: NAVIGATION_TIMEOUT_MS,
+          });
+          navigation("completed");
+        },
+        { operationId, attempt: attempt + 1, maxAttempts: MAX_RETRIES + 1 },
+      );
       return;
     } catch (err) {
+      const logDecision = (decision: "retry" | "stop", reason: string) =>
+        writeCrawlerDiagnostic({
+          event: "accounts_navigation_decision",
+          operation: "refresh_navigation",
+          operation_id: operationId,
+          attempt: attempt + 1,
+          max_attempts: MAX_RETRIES + 1,
+          decision,
+          decision_reason: reason,
+          retry_delay_ms: decision === "retry" ? retryDelayMs : null,
+          ...safeErrorDetails(err),
+        });
       if (page.isClosed()) {
+        logDecision("stop", "page_closed");
         throw err;
       }
 
-      if (!isRetryableNavigationError(err) || attempt === MAX_RETRIES) {
+      const retryable = isRetryableNavigationError(err);
+      if (!retryable || attempt === MAX_RETRIES) {
+        logDecision("stop", retryable ? "attempts_exhausted" : "error_not_retryable");
         throw err;
       }
 
+      logDecision("retry", "retryable_error");
       // A crashed Playwright page can reject page.waitForTimeout() and mask the
       // original navigation error. Use a process timer between attempts instead.
       await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
@@ -50,23 +84,28 @@ export async function navigateToAccountsPage(
 export async function getRefreshStatus(
   page: Page,
 ): Promise<{ incompleteAccounts: string[]; remainingCount: number }> {
-  const rows = page.locator("#account-table tr:has(td.account-status)");
-  const count = await rows.count();
-  const refreshRows: RefreshStatusRow[] = [];
+  return withAccountsPageDiagnostics(page, "refresh_status", async (checkpoint) => {
+    await checkpoint("status_read");
+    const rows = page.locator("#account-table tr:has(td.account-status)");
+    const count = await rows.count();
+    const refreshRows: RefreshStatusRow[] = [];
 
-  for (let i = 0; i < count; i++) {
-    const row = rows.nth(i);
-    const statuses = await row.locator("td.account-status").allTextContents();
-    const nameLink = row.locator("td.service a").first();
-    refreshRows.push({
-      name: statuses.some((status) => status.trim() === "更新中")
-        ? await ((await nameLink.count()) > 0 ? nameLink : row.locator("td").first()).textContent()
-        : null,
-      statuses,
-    });
-  }
+    for (let i = 0; i < count; i++) {
+      const row = rows.nth(i);
+      const statuses = await row.locator("td.account-status").allTextContents();
+      const nameLink = row.locator("td.service a").first();
+      refreshRows.push({
+        name: statuses.some((status) => status.trim() === "更新中")
+          ? await (
+              (await nameLink.count()) > 0 ? nameLink : row.locator("td").first()
+            ).textContent()
+          : null,
+        statuses,
+      });
+    }
 
-  return summarizeRefreshRows(refreshRows);
+    return summarizeRefreshRows(refreshRows);
+  });
 }
 
 export interface RefreshStatusRow {

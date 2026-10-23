@@ -36,6 +36,93 @@ export function isSupportedCashFlowAmount(value: string): boolean {
   return CASH_FLOW_AMOUNT_PATTERN.test(normalized);
 }
 
+const CSV_TIMEOUT = 15000;
+
+function decodeCashFlowCsv(body: Buffer): string {
+  // MoneyForward の CSV は Shift_JIS。BOM 付き UTF-8 で返る場合にも備える
+  const sjis = new TextDecoder("shift_jis").decode(body);
+  return sjis.includes("日付") ? sjis : new TextDecoder("utf-8").decode(body);
+}
+
+/**
+ * RFC 4180 の CSV を行ごとの列に分ける。改行は CRLF・LF・CR のどれでも区切りにする。
+ * 引用符が閉じていない、引用の直後に区切り以外の文字がある、などの不正な形は null。
+ */
+export function parseCsvRecords(text: string): string[][] | null {
+  const records: string[][] = [];
+  let record: string[] = [];
+  let field = "";
+  let quoted = false;
+  let afterQuote = false;
+  const endField = () => {
+    record.push(field);
+    field = "";
+    afterQuote = false;
+  };
+  const endRecord = () => {
+    // 引用符の外の物理的な空行だけを捨てる。",,," や "" の行は空の列を持つレコードとして残す
+    if (record.length === 0 && field === "" && !afterQuote) return;
+    endField();
+    records.push(record);
+    record = [];
+  };
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (quoted) {
+      if (char !== '"') field += char;
+      else if (text[i + 1] === '"') {
+        field += '"';
+        i++;
+      } else {
+        quoted = false;
+        afterQuote = true;
+      }
+    } else if (char === ",") endField();
+    else if (char === "\r" || char === "\n") {
+      if (char === "\r" && text[i + 1] === "\n") i++;
+      endRecord();
+    } else if (afterQuote) return null;
+    else if (char === '"') {
+      if (field !== "") return null;
+      quoted = true;
+    } else field += char;
+  }
+  if (quoted) return null;
+  endRecord();
+  return records;
+}
+
+// 家計簿の CSV の見出しにかならずある列（#cf-detail-table と同じ並び）
+const CASH_FLOW_CSV_COLUMNS = ["日付", "内容", "金額", "大項目", "中項目"] as const;
+
+/**
+ * CSV の中身が見出し行だけ（取引 0 件）かどうか。
+ * 見出しの列を確認できない応答（ログイン画面などの HTML）や、不正な CSV は空と扱わない。
+ * 空と判定するとその期間の保存済みの取引を置き換える（消す）ので、迷う形はすべて false にする。
+ */
+export function isEmptyCashFlowCsv(text: string): boolean {
+  const body = text.replace(/^\uFEFF/, "");
+  if (/[<>]/.test(body)) return false;
+  const records = parseCsvRecords(body);
+  if (records === null || records.length !== 1) return false;
+  const header = records[0].map((value) => value.trim());
+  const index = (name: string) =>
+    header.findIndex((value) => (name === "金額" ? value.startsWith(name) : value === name));
+  const positions = CASH_FLOW_CSV_COLUMNS.map(index);
+  return positions.every(
+    (position, i) => position >= 0 && (i === 0 || position > positions[i - 1]),
+  );
+}
+
+async function isCsvExplicitlyEmpty(page: Page, href: string): Promise<boolean> {
+  const response = await page.request.get(new URL(href, page.url()).toString(), {
+    timeout: CSV_TIMEOUT,
+  });
+  if (!response.ok()) return false;
+  if (/html|json|xml/i.test(response.headers()["content-type"] ?? "")) return false;
+  return isEmptyCashFlowCsv(decodeCashFlowCsv(await response.body()));
+}
+
 export async function verifyCashFlowRowsComplete(
   page: Page,
   detailCount: number,
@@ -43,10 +130,15 @@ export async function verifyCashFlowRowsComplete(
 ): Promise<void> {
   if (detailCount > 0) return;
 
-  const hasCsvLink = (await page.locator("a[href*='/cf/csv']").count()) > 0;
-  if (hasCsvLink || totals.some((total) => total !== 0)) {
-    throw new Error("Could not verify an explicit empty cash flow period");
-  }
+  const unverified = new Error("Could not verify an explicit empty cash flow period");
+  if (totals.some((total) => total !== 0)) throw unverified;
+
+  // 締め日の直後など、取引がまだない期間でも CSV のリンクは表示される。
+  // 表の 0 件だけでは描画途中と区別できないため、同じ期間の CSV が見出しだけかを確かめる
+  const csvHref = await getOptionalAttribute(page.locator("a[href*='/cf/csv']"), "href");
+  if (csvHref === null) return;
+  if (!(await isCsvExplicitlyEmpty(page, csvHref).catch(() => false))) throw unverified;
+  log("  Cash flow period is empty (verified by CSV)");
 }
 
 export function parseCashFlowMonthHeader(headerText: string | null): string | null {

@@ -36,6 +36,35 @@ export function isSupportedCashFlowAmount(value: string): boolean {
   return CASH_FLOW_AMOUNT_PATTERN.test(normalized);
 }
 
+const CSV_TIMEOUT = 15000;
+
+function decodeCashFlowCsv(body: Buffer): string {
+  // MoneyForward の CSV は Shift_JIS。BOM 付き UTF-8 で返る場合にも備える
+  const sjis = new TextDecoder("shift_jis").decode(body);
+  return sjis.includes("日付") ? sjis : new TextDecoder("utf-8").decode(body);
+}
+
+/**
+ * CSV の中身が見出し行だけ（取引 0 件）かどうか。
+ * 見出しを確認できない応答（ログイン画面など）は空と扱わない。
+ */
+export function isEmptyCashFlowCsv(text: string): boolean {
+  const lines = text
+    .replace(/^﻿/, "")
+    .split(/\r?\n/)
+    .filter((line) => line.trim() !== "");
+  const header = lines[0] ?? "";
+  return lines.length === 1 && header.includes("日付") && header.includes("金額");
+}
+
+async function isCsvExplicitlyEmpty(page: Page, href: string): Promise<boolean> {
+  const response = await page.request.get(new URL(href, page.url()).toString(), {
+    timeout: CSV_TIMEOUT,
+  });
+  if (!response.ok()) return false;
+  return isEmptyCashFlowCsv(decodeCashFlowCsv(await response.body()));
+}
+
 export async function verifyCashFlowRowsComplete(
   page: Page,
   detailCount: number,
@@ -43,10 +72,15 @@ export async function verifyCashFlowRowsComplete(
 ): Promise<void> {
   if (detailCount > 0) return;
 
-  const hasCsvLink = (await page.locator("a[href*='/cf/csv']").count()) > 0;
-  if (hasCsvLink || totals.some((total) => total !== 0)) {
-    throw new Error("Could not verify an explicit empty cash flow period");
-  }
+  const unverified = new Error("Could not verify an explicit empty cash flow period");
+  if (totals.some((total) => total !== 0)) throw unverified;
+
+  // 締め日の直後など、取引がまだない期間でも CSV のリンクは表示される。
+  // 表の 0 件だけでは描画途中と区別できないため、同じ期間の CSV が見出しだけかを確かめる
+  const csvHref = await getOptionalAttribute(page.locator("a[href*='/cf/csv']"), "href");
+  if (csvHref === null) return;
+  if (!(await isCsvExplicitlyEmpty(page, csvHref).catch(() => false))) throw unverified;
+  log("  Cash flow period is empty (verified by CSV)");
 }
 
 export function parseCashFlowMonthHeader(headerText: string | null): string | null {

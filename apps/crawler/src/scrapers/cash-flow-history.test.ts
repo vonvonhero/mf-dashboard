@@ -3,6 +3,7 @@ import { describe, expect, test, vi } from "vitest";
 import {
   buildMonthRange,
   extractCashFlowFromPage,
+  isEmptyCashFlowCsv,
   isSupportedCashFlowAmount,
   parseDetailRow,
   resolveCashFlowDate,
@@ -77,19 +78,75 @@ describe("verifyCashFlowRowsComplete", () => {
     await expect(verifyCashFlowRowsComplete(page, 0, [0, 0, 0])).resolves.toBeUndefined();
   });
 
-  test.each([
-    [1, [0, 0, 0]],
-    [0, [1, 0, 1]],
-  ])("CSVリンク数 %i と集計値 %j の0件表示を完全とは扱わない", async (csvLinks, totals) => {
+  test("集計値が0でなければ0件表示を完全とは扱わない", async () => {
     const page = {
       locator: vi.fn<() => { count: () => Promise<number> }>().mockReturnValue({
-        count: vi.fn<() => Promise<number>>().mockResolvedValue(csvLinks),
+        count: vi.fn<() => Promise<number>>().mockResolvedValue(0),
       }),
     } as unknown as Page;
 
-    await expect(verifyCashFlowRowsComplete(page, 0, totals)).rejects.toThrow(
+    await expect(verifyCashFlowRowsComplete(page, 0, [1, 0, 1])).rejects.toThrow(
       "explicit empty cash flow period",
     );
+  });
+
+  const header = "計算対象,日付,内容,金額（円）,保有金融機関,大項目,中項目,メモ,振替,ID";
+
+  function csvPage(response: { ok: boolean; body: Buffer } | Error) {
+    const get = vi.fn<(url: string) => Promise<unknown>>();
+    if (response instanceof Error) get.mockRejectedValue(response);
+    else get.mockResolvedValue({ ok: () => response.ok, body: async () => response.body });
+    const link = {
+      count: vi.fn<() => Promise<number>>().mockResolvedValue(1),
+      first: () => ({
+        getAttribute: vi
+          .fn<() => Promise<string>>()
+          .mockResolvedValue("/cf/csv?from=2026%2F10%2F23&month=10&year=2026"),
+      }),
+    };
+    const page = {
+      locator: vi.fn<() => typeof link>().mockReturnValue(link),
+      url: () => "https://moneyforward.com/cf",
+      request: { get },
+    } as unknown as Page;
+    return { page, get };
+  }
+
+  test("CSVリンクがあっても、CSVが見出しだけなら明示的な空期間として受け入れる", async () => {
+    const { page, get } = csvPage({
+      ok: true,
+      body: Buffer.from(new TextEncoder().encode(`﻿${header}\r\n`)),
+    });
+
+    await expect(verifyCashFlowRowsComplete(page, 0, [0, 0, 0])).resolves.toBeUndefined();
+    expect(get.mock.calls[0]?.[0]).toBe(
+      "https://moneyforward.com/cf/csv?from=2026%2F10%2F23&month=10&year=2026",
+    );
+  });
+
+  test.each([
+    ["取引の行がある", { ok: true, body: Buffer.from(`${header}\n"1","10/23","x","-100"\n`) }],
+    ["見出しがない（ログイン画面など）", { ok: true, body: Buffer.from("<html></html>") }],
+    ["HTTPエラー", { ok: false, body: Buffer.from(`${header}\n`) }],
+    ["取得に失敗", new Error("network")],
+  ])("CSVリンクがあり、CSVで空を確かめられない（%s）なら完全とは扱わない", async (_, response) => {
+    const { page } = csvPage(response);
+
+    await expect(verifyCashFlowRowsComplete(page, 0, [0, 0, 0])).rejects.toThrow(
+      "explicit empty cash flow period",
+    );
+  });
+});
+
+describe("isEmptyCashFlowCsv", () => {
+  test.each([
+    ["計算対象,日付,内容,金額（円）\r\n", true],
+    ["﻿計算対象,日付,内容,金額（円）\n\n", true],
+    ["計算対象,日付,内容,金額（円）\n1,10/23,x,-100\n", false],
+    ["", false],
+    ["<html></html>", false],
+  ])("%j → %s", (text, expected) => {
+    expect(isEmptyCashFlowCsv(text)).toBe(expected);
   });
 });
 

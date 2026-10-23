@@ -45,16 +45,71 @@ function decodeCashFlowCsv(body: Buffer): string {
 }
 
 /**
+ * RFC 4180 の CSV を行ごとの列に分ける。改行は CRLF・LF・CR のどれでも区切りにする。
+ * 引用符が閉じていない、引用の直後に区切り以外の文字がある、などの不正な形は null。
+ */
+export function parseCsvRecords(text: string): string[][] | null {
+  const records: string[][] = [];
+  let record: string[] = [];
+  let field = "";
+  let quoted = false;
+  let afterQuote = false;
+  const endField = () => {
+    record.push(field);
+    field = "";
+    afterQuote = false;
+  };
+  const endRecord = () => {
+    endField();
+    records.push(record);
+    record = [];
+  };
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (quoted) {
+      if (char !== '"') field += char;
+      else if (text[i + 1] === '"') {
+        field += '"';
+        i++;
+      } else {
+        quoted = false;
+        afterQuote = true;
+      }
+    } else if (char === ",") endField();
+    else if (char === "\r" || char === "\n") {
+      if (char === "\r" && text[i + 1] === "\n") i++;
+      endRecord();
+    } else if (afterQuote) return null;
+    else if (char === '"') {
+      if (field !== "") return null;
+      quoted = true;
+    } else field += char;
+  }
+  if (quoted) return null;
+  if (field !== "" || record.length > 0 || afterQuote) endRecord();
+  return records.filter((fields) => fields.some((value) => value.trim() !== ""));
+}
+
+// 家計簿の CSV の見出しにかならずある列（#cf-detail-table と同じ並び）
+const CASH_FLOW_CSV_COLUMNS = ["日付", "内容", "金額", "大項目", "中項目"] as const;
+
+/**
  * CSV の中身が見出し行だけ（取引 0 件）かどうか。
- * 見出しを確認できない応答（ログイン画面など）は空と扱わない。
+ * 見出しの列を確認できない応答（ログイン画面などの HTML）や、不正な CSV は空と扱わない。
+ * 空と判定するとその期間の保存済みの取引を置き換える（消す）ので、迷う形はすべて false にする。
  */
 export function isEmptyCashFlowCsv(text: string): boolean {
-  const lines = text
-    .replace(/^﻿/, "")
-    .split(/\r?\n/)
-    .filter((line) => line.trim() !== "");
-  const header = lines[0] ?? "";
-  return lines.length === 1 && header.includes("日付") && header.includes("金額");
+  const body = text.replace(/^\uFEFF/, "");
+  if (/[<>]/.test(body)) return false;
+  const records = parseCsvRecords(body);
+  if (records === null || records.length !== 1) return false;
+  const header = records[0].map((value) => value.trim());
+  const index = (name: string) =>
+    header.findIndex((value) => (name === "金額" ? value.startsWith(name) : value === name));
+  const positions = CASH_FLOW_CSV_COLUMNS.map(index);
+  return positions.every(
+    (position, i) => position >= 0 && (i === 0 || position > positions[i - 1]),
+  );
 }
 
 async function isCsvExplicitlyEmpty(page: Page, href: string): Promise<boolean> {
@@ -62,6 +117,7 @@ async function isCsvExplicitlyEmpty(page: Page, href: string): Promise<boolean> 
     timeout: CSV_TIMEOUT,
   });
   if (!response.ok()) return false;
+  if (/html|json|xml/i.test(response.headers()["content-type"] ?? "")) return false;
   return isEmptyCashFlowCsv(decodeCashFlowCsv(await response.body()));
 }
 

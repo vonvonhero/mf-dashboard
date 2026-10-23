@@ -60,6 +60,8 @@ export function parseCsvRecords(text: string): string[][] | null {
     afterQuote = false;
   };
   const endRecord = () => {
+    // 引用符の外の物理的な空行だけを捨てる。",,," や "" の行は空の列を持つレコードとして残す
+    if (record.length === 0 && field === "" && !afterQuote) return;
     endField();
     records.push(record);
     record = [];
@@ -86,8 +88,8 @@ export function parseCsvRecords(text: string): string[][] | null {
     } else field += char;
   }
   if (quoted) return null;
-  if (field !== "" || record.length > 0 || afterQuote) endRecord();
-  return records.filter((fields) => fields.some((value) => value.trim() !== ""));
+  endRecord();
+  return records;
 }
 
 // 家計簿の CSV の見出しにかならずある列（#cf-detail-table と同じ並び）

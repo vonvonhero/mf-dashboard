@@ -5,11 +5,13 @@ import type { Page } from "playwright";
 import { safeErrorDetails, writeCrawlerDiagnostic } from "../auth/diagnostics.js";
 import { debug, info, warn } from "../logger.js";
 import { withAccountsPageDiagnostics } from "./accounts-diagnostics.js";
+import { runRefreshStage } from "./refresh-diagnostics.js";
 
 const DEFAULT_MAX_WAIT_MINUTES = 20;
 const POLL_INTERVAL_MS = 60000; // 60 seconds
 const NAVIGATION_RETRY_DELAY_MS = 1000;
 const NAVIGATION_TIMEOUT_MS = 60000;
+const REFRESH_BUTTON_TIMEOUT_MS = 15000;
 
 interface NavigationOptions {
   retryDelayMs?: number;
@@ -284,6 +286,56 @@ export function getMaxWaitMinutes(env: NodeJS.ProcessEnv = process.env): number 
     : DEFAULT_MAX_WAIT_MINUTES;
 }
 
+// Read-only preparation: retries never include the account-refresh click.
+export async function prepareRefreshPage(
+  page: Page,
+  options: NavigationOptions = {},
+): Promise<void> {
+  const maxAttempts = 2;
+  const operationId = randomUUID();
+  const retryDelayMs = options.retryDelayMs ?? NAVIGATION_RETRY_DELAY_MS;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      await runRefreshStage("home_navigation", () =>
+        page.goto(mfUrls.home, {
+          waitUntil: "domcontentloaded",
+          timeout: NAVIGATION_TIMEOUT_MS,
+        }),
+      );
+      await runRefreshStage("modal_dismiss", () => dismissBlockingModal(page));
+      await runRefreshStage("button_wait", () =>
+        page.locator('a:has-text("一括更新")').first().waitFor({
+          state: "visible",
+          timeout: REFRESH_BUTTON_TIMEOUT_MS,
+        }),
+      );
+      return;
+    } catch (failure) {
+      const closed = page.isClosed();
+      const retryable = isRetryableNavigationError(failure);
+      const retry = !closed && retryable && attempt < maxAttempts;
+      writeCrawlerDiagnostic({
+        event: "refresh_preparation_decision",
+        operation_id: operationId,
+        attempt,
+        max_attempts: maxAttempts,
+        decision: retry ? "retry" : "stop",
+        decision_reason: closed
+          ? "page_closed"
+          : !retryable
+            ? "error_not_retryable"
+            : retry
+              ? "retryable_error"
+              : "attempts_exhausted",
+        retry_delay_ms: retry ? retryDelayMs : null,
+        ...safeErrorDetails(failure),
+      });
+      if (!retry) throw failure;
+      await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
+    }
+  }
+}
+
 export async function clickRefreshButton(
   page: Page,
   options: RefreshOptions = {},
@@ -293,27 +345,23 @@ export async function clickRefreshButton(
   const pollIntervalMs = options.pollIntervalMs ?? POLL_INTERVAL_MS;
   debug("Looking for refresh button...");
 
-  // Navigate to home and click refresh button
-  await page.goto(mfUrls.home);
-  await page.waitForLoadState("networkidle");
-
-  await dismissBlockingModal(page);
+  await prepareRefreshPage(page);
 
   const refreshButton = page.locator('a:has-text("一括更新")').first();
   try {
-    await refreshButton.click({ timeout: 5000 });
+    await runRefreshStage("button_click", () => refreshButton.click({ timeout: 5000 }));
   } catch (error) {
-    const dismissed = await dismissBlockingModal(page);
+    const dismissed = await runRefreshStage("modal_dismiss", () => dismissBlockingModal(page));
     if (!dismissed) {
       throw error;
     }
-    await refreshButton.click({ timeout: 5000 });
+    await runRefreshStage("button_click_retry", () => refreshButton.click({ timeout: 5000 }));
   }
 
   info("Refreshing accounts...");
 
   // Wait for refresh to start
-  await page.waitForTimeout(3000);
+  await runRefreshStage("refresh_start_wait", () => page.waitForTimeout(3000));
 
   // Navigate to accounts page to check update status
   await navigateToAccountsPage(page);

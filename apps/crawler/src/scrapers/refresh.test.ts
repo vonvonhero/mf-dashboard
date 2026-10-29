@@ -1,11 +1,13 @@
 import type { Page } from "playwright";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { info } from "../logger.js";
+import { runRefreshStage } from "./refresh-diagnostics.js";
 import {
   clickRefreshButton,
   getMaxWaitMinutes,
   getRefreshStatus,
   navigateToAccountsPage,
+  prepareRefreshPage,
   summarizeRefreshRows,
   type RefreshStatusRow,
 } from "./refresh.js";
@@ -14,7 +16,7 @@ function diagnosticEventMethods() {
   return { on: vi.fn<() => void>(), off: vi.fn<() => void>() };
 }
 
-function navigationDecisions() {
+function diagnostics(event: string) {
   return vi
     .mocked(info)
     .mock.calls.map(([message]) => message)
@@ -23,7 +25,35 @@ function navigationDecisions() {
         typeof message === "string" && message.startsWith("MF_CRAWLER_DIAGNOSTIC "),
     )
     .map((message) => JSON.parse(message.slice("MF_CRAWLER_DIAGNOSTIC ".length)))
-    .filter((record) => record.event === "accounts_navigation_decision");
+    .filter((record) => record.event === event);
+}
+
+function navigationDecisions() {
+  return diagnostics("accounts_navigation_decision");
+}
+
+function preparationPage() {
+  const button = {
+    waitFor: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
+    click: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
+  };
+  const goto = vi.fn<Page["goto"]>().mockResolvedValue(null);
+  const waitForLoadState = vi
+    .fn<Page["waitForLoadState"]>()
+    .mockRejectedValue(new Error("page.waitForLoadState: Timeout 30000ms exceeded"));
+  const page = {
+    ...diagnosticEventMethods(),
+    goto,
+    waitForLoadState,
+    isClosed: () => false,
+    locator: (selector: string) => {
+      if (selector === 'a:has-text("一括更新")') return { first: () => button };
+      if (selector === 'iframe[title="Modal Message"]')
+        return { first: () => ({ count: async () => 0 }) };
+      throw new Error(`Unexpected locator: ${selector}`);
+    },
+  } as unknown as Page;
+  return { page, button, goto, waitForLoadState };
 }
 
 afterEach(() => vi.mocked(info).mockClear());
@@ -247,9 +277,108 @@ describe("navigateToAccountsPage", () => {
   });
 });
 
+describe("runRefreshStage", () => {
+  test("グループ切替の開始・成功を同じIDで記録する", async () => {
+    await expect(runRefreshStage("group_switch", async () => true)).resolves.toBe(true);
+    const started = diagnostics("refresh_stage_started")[0];
+    const done = diagnostics("refresh_stage_done")[0];
+    expect(started.stage).toBe("group_switch");
+    expect(done.stage_id).toBe(started.stage_id);
+    expect(done.elapsed_ms).toBeGreaterThanOrEqual(0);
+  });
+
+  test("失敗段階だけを記録し、例外文を保存せず元の例外を返す", async () => {
+    const failure = new Error("page.goto: Timeout 30000ms exceeded: private-test-marker");
+    await expect(
+      runRefreshStage("home_navigation", async () => {
+        throw failure;
+      }),
+    ).rejects.toBe(failure);
+    expect(diagnostics("refresh_stage_failed")).toEqual([
+      expect.objectContaining({
+        stage: "home_navigation",
+        failure_kind: "timeout",
+        timeout_ms: 30000,
+      }),
+    ]);
+    expect(JSON.stringify(diagnostics("refresh_stage_failed"))).not.toContain(
+      "private-test-marker",
+    );
+  });
+});
+
+describe("prepareRefreshPage", () => {
+  test("通信終了を待たず、DOMとボタンの表示だけを確認する", async () => {
+    const { page, button, goto, waitForLoadState } = preparationPage();
+    await prepareRefreshPage(page, { retryDelayMs: 0 });
+    expect(goto).toHaveBeenCalledExactlyOnceWith("https://moneyforward.com/", {
+      waitUntil: "domcontentloaded",
+      timeout: 60000,
+    });
+    expect(button.waitFor).toHaveBeenCalledExactlyOnceWith({ state: "visible", timeout: 15000 });
+    expect(waitForLoadState).not.toHaveBeenCalled();
+    expect(button.click).not.toHaveBeenCalled();
+    expect(diagnostics("refresh_stage_done").map(({ stage }) => stage)).toEqual([
+      "home_navigation",
+      "modal_dismiss",
+      "button_wait",
+    ]);
+  });
+
+  test.each([
+    "Timeout 60000ms exceeded",
+    "Navigation is interrupted by another navigation",
+    "net::ERR_ABORTED",
+  ])("クリック前の一時的な失敗を1回再試行する: %s", async (message) => {
+    const { page, button, goto } = preparationPage();
+    goto.mockRejectedValueOnce(new Error(message));
+    await prepareRefreshPage(page, { retryDelayMs: 0 });
+    expect(goto).toHaveBeenCalledTimes(2);
+    expect(button.waitFor).toHaveBeenCalledOnce();
+    expect(button.click).not.toHaveBeenCalled();
+    expect(diagnostics("refresh_preparation_decision")).toEqual([
+      expect.objectContaining({ decision: "retry", attempt: 1, max_attempts: 2 }),
+    ]);
+  });
+
+  test.each(["home_navigation", "button_wait"])(
+    "%s のタイムアウトが続く場合は2回で止める",
+    async (stage) => {
+      const { page, button, goto } = preparationPage();
+      const failure = new Error("Timeout 15000ms exceeded");
+      if (stage === "home_navigation") goto.mockRejectedValue(failure);
+      else button.waitFor.mockRejectedValue(failure);
+      await expect(prepareRefreshPage(page, { retryDelayMs: 0 })).rejects.toBe(failure);
+      expect(goto).toHaveBeenCalledTimes(2);
+      expect(button.click).not.toHaveBeenCalled();
+      expect(diagnostics("refresh_stage_failed")).toHaveLength(2);
+      expect(diagnostics("refresh_stage_failed").every((record) => record.stage === stage)).toBe(
+        true,
+      );
+      const decisions = diagnostics("refresh_preparation_decision");
+      expect(decisions.map(({ decision }) => decision)).toEqual(["retry", "stop"]);
+      expect(decisions[1].decision_reason).toBe("attempts_exhausted");
+      expect(decisions[0].operation_id).toBe(decisions[1].operation_id);
+    },
+  );
+
+  test.each([false, true])("クラッシュや閉じたページは再試行しない: closed=%s", async (closed) => {
+    const { page, button, goto } = preparationPage();
+    const failure = new Error(closed ? "Timeout 60000ms exceeded" : "Page crashed");
+    page.isClosed = () => closed;
+    goto.mockRejectedValue(failure);
+    await expect(prepareRefreshPage(page, { retryDelayMs: 0 })).rejects.toBe(failure);
+    expect(goto).toHaveBeenCalledOnce();
+    expect(button.click).not.toHaveBeenCalled();
+  });
+});
+
 describe("clickRefreshButton", () => {
   test("60秒間隔で監視し、遷移の割り込みから復帰しても一括更新を押し直さない", async () => {
-    const refreshButton = { click: vi.fn<() => Promise<void>>().mockResolvedValue(undefined) };
+    const refreshButton = {
+      click: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
+      waitFor: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
+    };
     const rows = {
       count: vi.fn<() => Promise<number>>().mockResolvedValueOnce(1).mockResolvedValueOnce(0),
       nth: () => ({
@@ -313,6 +442,7 @@ describe("clickRefreshButton", () => {
   test("Modal Message iframe が出ていても閉じてから更新を押せる", async () => {
     const clicks: string[] = [];
     const refreshButton = {
+      waitFor: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
       click: vi.fn<() => Promise<void>>(async () => {
         clicks.push("refresh");
       }),

@@ -22,6 +22,7 @@ import {
 import { getLiabilities } from "./scrapers/liabilities.js";
 import { getManualHoldingAccountMap } from "./scrapers/manual-holding-accounts.js";
 import { getLinkedAccountDetailSource, getPortfolio } from "./scrapers/portfolio.js";
+import { runRefreshStage } from "./scrapers/refresh-diagnostics.js";
 import { clickRefreshButton, getMaxWaitMinutes } from "./scrapers/refresh.js";
 import { getRegisteredAccounts } from "./scrapers/registered-accounts.js";
 import { applyScheduledWithdrawals } from "./scrapers/scheduled-withdrawals.js";
@@ -98,7 +99,7 @@ async function scrapeGlobalData(
     maxWaitMinutes: getMaxWaitMinutes(),
   });
   try {
-    await switchGroup(page, NO_GROUP_ID);
+    await runRefreshStage("group_switch", () => switchGroup(page, NO_GROUP_ID));
   } catch (error) {
     await progress.failStep(refreshStep, normalizeCrawlerError(error, "refresh_failed"));
     throw error;
